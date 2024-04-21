@@ -13,7 +13,7 @@
             
             @include('role.partials.form')
 
-            {!! Form::submit('Actualizar', ['class' => 'btn btn-secundary border border-secondary btn-sm']) !!}
+            {!! Form::submit('Actualizar', ['class' => 'btn btn-success border border-secondary btn-sm']) !!}
             {!! Form::close() !!}
         </div>
     </div>

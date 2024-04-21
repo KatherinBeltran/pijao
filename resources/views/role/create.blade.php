@@ -13,7 +13,7 @@
 
                 @include('role.partials.form')
 
-                {!! Form::submit('Guardar', ['class' => 'btn btn-secundary border border-secondary btn-sm']) !!}
+                {!! Form::submit('Guardar', ['class' => 'btn btn-success border border-secondary btn-sm']) !!}
                 {!! Form::close() !!}
             </div>      
         </div>

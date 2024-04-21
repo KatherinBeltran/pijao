@@ -314,22 +314,40 @@ return [
         ['header' => 'Menú'],
         [
             'text'    => 'Gestión de usuarios',
-            'icon'    => 'fa fa-users',
+            'icon'    => 'fa fa-users fa-2x',
             'can' => ['users.index', 'roles.index'],
             'submenu' => [
                 [
                     'text' => 'Usuarios',
                     'url'  => 'users',
-                    'icon' => 'fa fa-user-circle',
+                    'icon' => 'fa fa-user-circle fa-lg',
                     'can' => 'users.index',
                 ],
                 [
                     'text' => 'Roles',
                     'url'  => 'roles',
-                    'icon' => 'fa fa-user-secret',
+                    'icon' => 'fa fa-user-secret fa-lg',
                     'can' => 'roles.index',
                 ], 
             ],
+        ],
+        [
+            'text'    => 'Clientes',
+            'url'  => 'clientes',
+            'icon'    => 'fa fa-address-book fa-2x',
+            'can' => ['clientes.index'],
+        ],
+        [
+            'text'    => 'Cobradores',
+            'url'  => 'cobradores',
+            'icon'    => 'fa fa-motorcycle fa-2x',
+            'can' => ['cobradores.index'],
+        ],
+        [
+            'text'    => 'Prestamos',
+            'url'  => 'prestamos',
+            'icon'    => 'fa fa-handshake fa-2x',
+            'can' => ['prestamos.index'],
         ],
     ],
 

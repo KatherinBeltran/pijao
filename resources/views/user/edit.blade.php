@@ -22,7 +22,7 @@
                         </label>
                     </div>
                 @endforeach
-                {!! Form::submit('Asignar rol', ['class' => 'btn btn-secundary border border-secondary btn-sm']) !!}
+                {!! Form::submit('Asignar rol', ['class' => 'btn btn-success border border-secondary btn-sm']) !!}
             {!! Form::close() !!}
         </div>
     </div>
