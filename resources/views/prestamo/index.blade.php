@@ -28,10 +28,10 @@
         <thead class="thead">
         <tr>
             <th>Código factura asignada</th>
-            
             <th>Código cliente</th>
             <th>Fecha</th>
             <th>Fecha pago anticipado</th>
+            <th>Nombre</th>
             <th>Cobros y/o pagos</th>
             <th>Cuotas</th>
             <th>Capital</th>
@@ -45,8 +45,7 @@
             <th>Valor cuotas pendientes</th>
             <th>Estado</th>
             <th>Dias en mora</th>
-
-            <th></th>
+            <th>Acciones</th>
         </tr>
         </thead>
         <tbody>
@@ -57,6 +56,7 @@
                 <td>{{ $prestamo->cli_pre }}</td>
                 <td>{{ $prestamo->fec_pre }}</td>
                 <td>{{ $prestamo->fec_pag_ant_pre }}</td>
+                <td>{{ $prestamo->cliente->nom_cli }}</td>
                 <td>{{ $prestamo->pag_pre }}</td>
                 <td>{{ $prestamo->cuo_pre }}</td>
                 <td>{{ $prestamo->cap_pre }}</td>

@@ -26,7 +26,7 @@ class CobradoreController extends Controller
      */
     public function index()
     {
-        $cobradores = Cobradore::paginate();
+        $cobradores = Cobradore::paginate(10000);
 
         return view('cobradore.index', compact('cobradores'))
             ->with('i', (request()->input('page', 1) - 1) * $cobradores->perPage());

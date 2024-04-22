@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('prestamos', function (Blueprint $table) {
             $table->increments('id'); // codigo prestamo
             $table->unsignedInteger('cli_pre'); // codigo cliente prestamo
-            $table->datetime('fec_pre'); // fecha prestamo
+            $table->datetime('fec_pre')->nullable(); // fecha prestamo
             $table->datetime('fec_pag_ant_pre')->nullable(); // fecha pago anticipado prestamo
             $table->string('pag_pre', 10)->nullable(); // cobros y/o pagos prestamo
             $table->integer('cuo_pre')->nullable(); // cuotas prestamo

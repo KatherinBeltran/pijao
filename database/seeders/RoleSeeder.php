@@ -47,5 +47,11 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'prestamos.show', 'description' => 'Ver prestamo'])->syncRoles([$role1]);
         Permission::create(['name' => 'prestamos.edit', 'description' => 'Editar prestamo'])->syncRoles([$role1]);
         Permission::create(['name' => 'prestamos.destroy', 'description' => 'Eliminar prestamo'])->syncRoles([$role1]);
+
+        Permission::create(['name' => 'cuotas.index', 'description' => 'Ver listado de cuotas'])->syncRoles([$role1]); 
+        Permission::create(['name' => 'cuotas.create', 'description' => 'Registrar nuevo cuota'])->syncRoles([$role1]); 
+        Permission::create(['name' => 'cuotas.show', 'description' => 'Ver cuota'])->syncRoles([$role1]);
+        Permission::create(['name' => 'cuotas.edit', 'description' => 'Editar cuota'])->syncRoles([$role1]);
+        Permission::create(['name' => 'cuotas.destroy', 'description' => 'Eliminar cuota'])->syncRoles([$role1]);
     }
 }

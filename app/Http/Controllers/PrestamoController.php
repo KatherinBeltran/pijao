@@ -28,7 +28,7 @@ class PrestamoController extends Controller
      */
     public function index()
     {
-        $prestamos = Prestamo::paginate();
+        $prestamos = Prestamo::paginate(10000);
 
         return view('prestamo.index', compact('prestamos'))
             ->with('i', (request()->input('page', 1) - 1) * $prestamos->perPage());
@@ -43,8 +43,7 @@ class PrestamoController extends Controller
     {
         // Obtener los códigos de cliente (IDs)
         $clientes = Cliente::pluck('id', 'id');
-        
-        // Crear una nueva instancia de Prestamo
+
         $prestamo = new Prestamo();
         
         // Verificar si ya hay un valor en cli_pre
@@ -97,8 +96,9 @@ class PrestamoController extends Controller
      */
     public function edit($id)
     {
-        // Obtener los códigos de cliente y nombres
+        // Obtener los códigos de cliente (IDs)
         $clientes = Cliente::pluck('id', 'id');
+        
         $prestamo = Prestamo::find($id);
     
         // Verificar si ya hay un valor en cli_pre
@@ -125,8 +125,7 @@ class PrestamoController extends Controller
      */
     public function update(Request $request, Prestamo $prestamo)
     {
-        request()->validate(Prestamo::$rules);
-
+        
         $prestamo->update($request->all());
 
         return redirect()->route('prestamos.index')

@@ -3,10 +3,10 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <h1>Lista de cobradores</h1>
+    <h1>Manejo de cuotas</h1>
 
     <div class="float-right">
-        <a href="{{ route('cobradores.create') }}" class="btn btn-block btn-outline-success btn-sm float-right"  data-placement="left">
+        <a href="{{ route('cuotas.create') }}" class="btn btn-block btn-outline-success btn-sm float-right" data-placement="left">
             {{ __('Nuevo') }}
         </a>
     </div>
@@ -27,33 +27,35 @@
     <table id="example" class="table table-striped table-bordered" style="width:100%">
         <thead class="thead">
             <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>No. de cédula</th>
-                <th>No. de celular</th>
-                <th>Dirección</th>
-                <th>Barrio</th>
+                <th>Código cliente</th>
+                <th>Código prestamo</th>
+                <th>Fecha</th>
+                <th>Valor</th>
+                <th>Total abonado</th>
+                <th>Saldo</th>
+                <th>Número</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($cobradores as $cobradore)
-                <td>{{ $cobradore->id }}</td>
-                                            
-                <td>{{ $cobradore->nom_cob }}</td>
-                <td>{{ $cobradore->num_ced_cob }}</td>
-                <td>{{ $cobradore->num_cel_cob }}</td>
-                <td>{{ $cobradore->dir_cob }}</td>
-                <td>{{ $cobradore->bar_cob }}</td>
+            @foreach ($cuotas as $cuota)
+            <tr>
+                <td>{{ $cuota->cli_cuo }}</td>
+                <td>{{ $cuota->pre_cuo }}</td>
+                <td>{{ $cuota->fec_cuo }}</td>
+                <td>{{ $cuota->val_cuo }}</td>
+                <td>{{ $cuota->tot_abo_cuo }}</td>
+                <td>{{ $cuota->sal_cuo }}</td>
+                <td>{{ $cuota->num_cuo }}</td>
 
                 <td>
-                    <form action="{{ route('cobradores.destroy',$cobradore->id) }}" method="POST">
-                        <a class="btn btn-sm btn-info" href="{{ route('cobradores.show',$cobradore->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('') }}</a>
-                        <a class="btn btn-sm btn-warning" href="{{ route('cobradores.edit',$cobradore->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('') }}</a>
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> {{ __('') }}</button>
-                    </form>
+                <form action="{{ route('cuotas.destroy',$cuota->id) }}" method="POST">
+                    <a class="btn btn-sm btn-info" href="{{ route('cuotas.show',$cuota->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('') }}</a>
+                    <a class="btn btn-sm btn-warning" href="{{ route('cuotas.edit',$cuota->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('') }}</a>
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> {{ __('') }}</button>
+                </form>
                 </td>
                 </tr>
             @endforeach

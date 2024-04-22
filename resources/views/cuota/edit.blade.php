@@ -3,7 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <h1>Editar Prestamo</h1>
+    <h1>Editar Cuota</h1>
 @stop
 
 @section('content')
@@ -15,11 +15,11 @@
 
                 <div class="card card-default">
                     <div class="card-body">
-                        <form method="POST" action="{{ route('prestamos.update', $prestamo->id) }}"  role="form" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('cuotas.update', $cuota->id) }}"  role="form" enctype="multipart/form-data">
                             {{ method_field('PATCH') }}
                             @csrf
 
-                            @include('prestamo.form')
+                            @include('cuota.form')
 
                         </form>
                     </div>

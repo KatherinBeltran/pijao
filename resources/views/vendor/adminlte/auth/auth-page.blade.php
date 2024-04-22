@@ -23,7 +23,7 @@
             <a href="{{ $dashboard_url }}">
 
                 {{-- Logo Image --}}
-                {{-- @if (config('adminlte.auth_logo.enabled', false))
+                @if (config('adminlte.auth_logo.enabled', false))
                     <img src="{{ asset(config('adminlte.auth_logo.img.path')) }}"
                          alt="{{ config('adminlte.auth_logo.img.alt') }}"
                          @if (config('adminlte.auth_logo.img.class', null))
@@ -40,9 +40,8 @@
                          alt="{{ config('adminlte.logo_img_alt') }}" height="50">
                 @endif
 
-                 Logo Label 
-                {!! config('adminlte.logo', '<b>Admin</b>LTE') !!} --}}
-                <img src="{{ asset('vendor/adminlte/dist/img/logomain.png') }}" height="300">
+                {{-- Logo Label --}}
+                {!! config('adminlte.logo', '<b>Admin</b>LTE') !!}
 
             </a>
         </div>

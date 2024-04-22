@@ -40,5 +40,4 @@ class Cobradore extends Model
     protected $fillable = ['nom_cob','num_ced_cob','num_cel_cob','dir_cob','bar_cob'];
 
 
-
 }

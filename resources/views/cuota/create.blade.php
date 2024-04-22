@@ -3,23 +3,22 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <h1>Editar Prestamo</h1>
+    <h1>Nueva Cuota</h1>
 @stop
 
 @section('content')
     <section class="content container-fluid">
-        <div class="">
+        <div class="row">
             <div class="col-md-12">
 
                 @includeif('partials.errors')
 
                 <div class="card card-default">
                     <div class="card-body">
-                        <form method="POST" action="{{ route('prestamos.update', $prestamo->id) }}"  role="form" enctype="multipart/form-data">
-                            {{ method_field('PATCH') }}
+                        <form method="POST" action="{{ route('cuotas.store') }}"  role="form" enctype="multipart/form-data">
                             @csrf
 
-                            @include('prestamo.form')
+                            @include('cuota.form')
 
                         </form>
                     </div>

@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property $updated_at
  *
  * @property Cliente $cliente
+ * @property Cuota[] $cuotas
  * @package App
  * @mixin \Illuminate\Database\Eloquent\Builder
  */
@@ -36,7 +37,6 @@ class Prestamo extends Model
     
     static $rules = [
 		'cli_pre' => 'required',
-		'fec_pre' => 'required',
 		'int_pre' => 'required',
     ];
 
@@ -56,6 +56,14 @@ class Prestamo extends Model
     public function cliente()
     {
         return $this->hasOne('App\Models\Cliente', 'id', 'cli_pre');
+    }
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function cuotas()
+    {
+        return $this->hasMany('App\Models\Cuota', 'pre_cuo', 'id');
     }
     
 

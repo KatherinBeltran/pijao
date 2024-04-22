@@ -28,14 +28,12 @@
         <thead class="thead">
             <tr>
                 <th>Código</th>
-                
                 <th>Nombre</th>
                 <th>No. de cédula</th>
                 <th>No. de celular</th>
                 <th>Dirección</th>
                 <th>Barrio</th>
-
-                <th></th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>

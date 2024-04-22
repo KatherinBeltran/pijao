@@ -349,6 +349,12 @@ return [
             'icon'    => 'fa fa-handshake fa-2x',
             'can' => ['prestamos.index'],
         ],
+        [
+            'text'    => 'Cuotas',
+            'url'  => 'cuotas',
+            'icon'    => 'fa fa-cubes fa-2x',
+            'can' => ['cuotas.index'],
+        ],
     ],
 
     /*
