@@ -34,7 +34,7 @@ class CuotaController extends Controller
             ->join(DB::raw('(SELECT MAX(id) AS id FROM cuotas GROUP BY cli_cuo, pre_cuo) AS sub'), function ($join) {
                 $join->on('cuotas.id', '=', 'sub.id');
             })
-            ->whereNotExists(function ($query) {
+            /*->whereNotExists(function ($query) {
                 $query->selectRaw('1')
                     ->from('prestamos')
                     ->whereRaw('prestamos.cuo_pre = cuotas.num_cuo')
@@ -45,10 +45,12 @@ class CuotaController extends Controller
                     ->whereRaw('cuotas.tot_abo_cuo IS NOT NULL')
                     ->whereRaw('cuotas.sal_cuo IS NOT NULL')
                     ->whereRaw('cuotas.num_cuo IS NOT NULL');
-            })
+            })*/
             ->paginate(10000);
+
+            $prestamos = Prestamo::all();
     
-        return view('cuota.index', compact('cuotas'))
+        return view('cuota.index', compact('cuotas', 'prestamos'))
             ->with('i', (request()->input('page', 1) - 1) * $cuotas->perPage());
     }     
 
@@ -161,23 +163,23 @@ class CuotaController extends Controller
     {
         // Validar los datos de entrada
         $request->validate(Cuota::$rules);
-    
+
         // Obtener el préstamo asociado a esta cuota
         $prestamo = Prestamo::findOrFail($request->pre_cuo);
-    
+
         // Verificar si el número de cuotas existentes es igual a cuo_pre
         $cuotas_existentes = Cuota::where('pre_cuo', $request->pre_cuo)->count();
         if ($cuotas_existentes < $prestamo->cuo_pre) {
             // Incrementar el número de cuotas existentes
             $cuotas_existentes++;
-    
+
             // Crear un nuevo registro de cuota con los campos específicos
             Cuota::create([
                 'cli_cuo' => $request->cli_cuo,
                 'pre_cuo' => $request->pre_cuo,
                 'num_cuo' => $cuotas_existentes,
             ]);
-    
+
             // Actualizar el registro actual con los campos editados que el usuario ha proporcionado
             $cuota->update([
                 'fec_cuo' => $request->fec_cuo,
@@ -185,14 +187,44 @@ class CuotaController extends Controller
                 'tot_abo_cuo' => $request->tot_abo_cuo,
                 'sal_cuo' => $request->sal_cuo,
             ]);
-    
+
+            // Después de realizar la actualización de la cuota, obtenemos el valor de num_cuo
+            $num_cuo = $cuota->num_cuo;
+
+            // Actualizamos el campo cuo_pag_pre del préstamo asociado
+            $prestamo->cuo_pag_pre = $num_cuo;
+
+            // Obtener el total abonado
+            $tot_abo_cuo = $request->tot_abo_cuo;
+
+            // Asignar el total abonado al campo val_pag_pre del préstamo asociado
+            $prestamo->val_pag_pre = $tot_abo_cuo;
+
+            // Actualizamos el campo sig_cuo_pre del préstamo asociado con el valor de cuotas_existentes
+            $prestamo->sig_cuo_pre = $cuotas_existentes;
+
+            // Calcular el número de cuotas pendientes
+            $cuo_pen_pre = $prestamo->cuo_pre - $prestamo->cuo_pag_pre;
+
+            // Actualizar el campo cuo_pen_pre del préstamo asociado con el valor calculado
+            $prestamo->cuo_pen_pre = $cuo_pen_pre;
+
+            // Calcular el valor de las cuotas pendientes
+            $val_cuo_pen_pre = $prestamo->tot_pre - $prestamo->val_pag_pre;
+
+            // Actualizar el campo val_cuo_pen_pre del préstamo asociado con el valor calculado
+            $prestamo->val_cuo_pen_pre = $val_cuo_pen_pre;
+
+            // Guardamos los cambios en el préstamo
+            $prestamo->save();
+
             return redirect()->route('cuotas.index')
                 ->with('success', '<div class="alert alert-success alert-dismissible">
                                         <h5><i class="icon fas fa-check"></i> ¡Éxito!</h5>
                                         Cuota actualizada exitosamente.
                                     </div>');
         }
-    
+
         // Si el número de cuotas existentes ya es igual a cuo_pre, solo actualizamos el registro actual
         $cuota->update([
             'cli_cuo' => $request->cli_cuo,
@@ -202,7 +234,37 @@ class CuotaController extends Controller
             'tot_abo_cuo' => $request->tot_abo_cuo,
             'sal_cuo' => $request->sal_cuo,
         ]);
-    
+
+        // Después de realizar la actualización de la cuota, obtenemos el valor de num_cuo
+        $num_cuo = $cuota->num_cuo;
+
+        // Actualizamos el campo cuo_pag_pre del préstamo asociado
+        $prestamo->cuo_pag_pre = $num_cuo;
+
+        // Obtener el total abonado
+        $tot_abo_cuo = $request->tot_abo_cuo;
+
+        // Asignar el total abonado al campo val_pag_pre del préstamo asociado
+        $prestamo->val_pag_pre = $tot_abo_cuo;
+
+        // Actualizamos el campo sig_cuo_pre del préstamo asociado con el valor de cuotas_existentes
+        $prestamo->sig_cuo_pre = $cuotas_existentes;
+
+        // Calcular el número de cuotas pendientes
+        $cuo_pen_pre = $prestamo->cuo_pre - $prestamo->cuo_pag_pre;
+
+        // Actualizar el campo cuo_pen_pre del préstamo asociado con el valor calculado
+        $prestamo->cuo_pen_pre = $cuo_pen_pre;
+
+        // Calcular el valor de las cuotas pendientes
+        $val_cuo_pen_pre = $prestamo->tot_pre - $prestamo->val_pag_pre;
+
+        // Actualizar el campo val_cuo_pen_pre del préstamo asociado con el valor calculado
+        $prestamo->val_cuo_pen_pre = $val_cuo_pen_pre;
+
+        // Guardamos los cambios en el préstamo
+        $prestamo->save();
+
         return redirect()->route('cuotas.index')
             ->with('success', '<div class="alert alert-success alert-dismissible">
                                     <h5><i class="icon fas fa-check"></i> ¡Éxito!</h5>

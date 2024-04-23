@@ -24,9 +24,9 @@ return new class extends Migration
             $table->integer('val_cuo_pre')->nullable(); // valor cuota prestamo
             $table->integer('cuo_pag_pre')->nullable(); // cuotas pagadas prestamo
             $table->integer('val_pag_pre')->nullable(); // valor pagado prestamo
-            $table->integer('sig_cou_pre')->nullable(); // siguiente couta prestamo
-            $table->integer('cou_pen_pre')->nullable(); // cuotas pendientes prestamo
-            $table->integer('val_cou_pen_pre')->nullable(); // valor cuotas pendientes prestamo
+            $table->integer('sig_cuo_pre')->nullable(); // siguiente cuota prestamo
+            $table->integer('cuo_pen_pre')->nullable(); // cuotas pendientes prestamo
+            $table->integer('val_cuo_pen_pre')->nullable(); // valor cuotas pendientes prestamo
             $table->string('est_pag_pre')->nullable(); // estado pago prestamo
             $table->integer('dia_mor_pre')->nullable(); // dias mora prestamo
             $table->foreign('cli_pre')->references('id')->on('clientes');

@@ -52,28 +52,28 @@
                 </div>
                 <div class="form-group">
                     {{ Form::label('Cuotas pagadas') }}
-                    {{ Form::text('cuo_pag_pre', $prestamo->cuo_pag_pre, ['class' => 'form-control' . ($errors->has('cuo_pag_pre') ? ' is-invalid' : ''), 'placeholder' => 'Cuotas pagadas']) }}
+                    {{ Form::text('cuo_pag_pre', $prestamo->cuo_pag_pre, ['class' => 'form-control' . ($errors->has('cuo_pag_pre') ? ' is-invalid' : ''), 'placeholder' => 'Cuotas pagadas', 'readonly' => 'disabled']) }}
                     {!! $errors->first('cuo_pag_pre', '<div class="invalid-feedback">:message</div>') !!}
                 </div>
                 <div class="form-group">
                     {{ Form::label('Valor pagado') }}
-                    {{ Form::text('val_pag_pre', $prestamo->val_pag_pre, ['class' => 'form-control' . ($errors->has('val_pag_pre') ? ' is-invalid' : ''), 'placeholder' => 'Valor pagado']) }}
+                    {{ Form::text('val_pag_pre', $prestamo->val_pag_pre, ['class' => 'form-control' . ($errors->has('val_pag_pre') ? ' is-invalid' : ''), 'placeholder' => 'Valor pagado', 'readonly' => 'disabled']) }}
                     {!! $errors->first('val_pag_pre', '<div class="invalid-feedback">:message</div>') !!}
                 </div>
                 <div class="form-group">
                     {{ Form::label('Siguiente cuota') }}
-                    {{ Form::text('sig_cou_pre', $prestamo->sig_cou_pre, ['class' => 'form-control' . ($errors->has('sig_cou_pre') ? ' is-invalid' : ''), 'placeholder' => 'Siguiente cuota']) }}
-                    {!! $errors->first('sig_cou_pre', '<div class="invalid-feedback">:message</div>') !!}
+                    {{ Form::text('sig_cuo_pre', $prestamo->sig_cuo_pre, ['class' => 'form-control' . ($errors->has('sig_cuo_pre') ? ' is-invalid' : ''), 'placeholder' => 'Siguiente cuota', 'readonly' => 'disabled']) }}
+                    {!! $errors->first('sig_cuo_pre', '<div class="invalid-feedback">:message</div>') !!}
                 </div>
                 <div class="form-group">
                     {{ Form::label('Cuotas pendientes') }}
-                    {{ Form::text('cou_pen_pre', $prestamo->cou_pen_pre, ['class' => 'form-control' . ($errors->has('cou_pen_pre') ? ' is-invalid' : ''), 'placeholder' => 'Cuotas pendientes']) }}
-                    {!! $errors->first('cou_pen_pre', '<div class="invalid-feedback">:message</div>') !!}
+                    {{ Form::text('cuo_pen_pre', $prestamo->cuo_pen_pre, ['class' => 'form-control' . ($errors->has('cuo_pen_pre') ? ' is-invalid' : ''), 'placeholder' => 'Cuotas pendientes', 'readonly' => 'disabled']) }}
+                    {!! $errors->first('cuo_pen_pre', '<div class="invalid-feedback">:message</div>') !!}
                 </div>
                 <div class="form-group">
                     {{ Form::label('Valor cuotas pendientes') }}
-                    {{ Form::text('val_cou_pen_pre', $prestamo->val_cou_pen_pre, ['class' => 'form-control' . ($errors->has('val_cou_pen_pre') ? ' is-invalid' : ''), 'placeholder' => 'Valor cuotas pendientes']) }}
-                    {!! $errors->first('val_cou_pen_pre', '<div class="invalid-feedback">:message</div>') !!}
+                    {{ Form::text('val_cuo_pen_pre', $prestamo->val_cuo_pen_pre, ['class' => 'form-control' . ($errors->has('val_cuo_pen_pre') ? ' is-invalid' : ''), 'placeholder' => 'Valor cuotas pendientes', 'readonly' => 'disabled']) }}
+                    {!! $errors->first('val_cuo_pen_pre', '<div class="invalid-feedback">:message</div>') !!}
                 </div>
                 <div class="form-group">
                     {{ Form::label('Estado') }}

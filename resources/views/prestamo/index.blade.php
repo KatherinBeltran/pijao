@@ -37,7 +37,7 @@
             <th>Capital</th>
             <th>Interes %</th>
             <th>Total a pagar</th>
-            <th>Valor couta</th>
+            <th>Valor cuota</th>
             <th>Cuotas pagadas</th>
             <th>Valor pagado</th>
             <th>Siguiente cuota</th>
@@ -65,9 +65,9 @@
                 <td>{{ $prestamo->val_cuo_pre }}</td>
                 <td>{{ $prestamo->cuo_pag_pre }}</td>
                 <td>{{ $prestamo->val_pag_pre }}</td>
-                <td>{{ $prestamo->sig_cou_pre }}</td>
-                <td>{{ $prestamo->cou_pen_pre }}</td>
-                <td>{{ $prestamo->val_cou_pen_pre }}</td>
+                <td>{{ $prestamo->sig_cuo_pre }}</td>
+                <td>{{ $prestamo->cuo_pen_pre }}</td>
+                <td>{{ $prestamo->val_cuo_pen_pre }}</td>
                 <td>{{ $prestamo->est_pag_pre }}</td>
                 <td>{{ $prestamo->dia_mor_pre }}</td>
 

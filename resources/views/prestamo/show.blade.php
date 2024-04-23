@@ -68,15 +68,15 @@
                                 </div>
                                 <div class="form-group">
                                     <strong>Siguiente cuota:</strong>
-                                    {{ $prestamo->sig_cou_pre }}
+                                    {{ $prestamo->sig_cuo_pre }}
                                 </div>
                                 <div class="form-group">
-                                    <strong>Coutas pendientes:</strong>
-                                    {{ $prestamo->cou_pen_pre }}
+                                    <strong>cuotas pendientes:</strong>
+                                    {{ $prestamo->cuo_pen_pre }}
                                 </div>
                                 <div class="form-group">
                                     <strong>Valor cuotas pendientes:</strong>
-                                    {{ $prestamo->val_cou_pen_pre }}
+                                    {{ $prestamo->val_cuo_pen_pre }}
                                 </div>
                                 <div class="form-group">
                                     <strong>Estado:</strong>

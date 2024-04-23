@@ -74,6 +74,7 @@ class Cliente extends Model
             $prestamo->cli_pre = $cliente->id;
             $prestamo->fec_pre = $fechaHoraActual;
             $prestamo->int_pre = 20; // Interés
+            $prestamo->val_pag_pre = 0;
             $prestamo->save();
     
             // Crear un nuevo registro en la tabla de cuotas
@@ -85,5 +86,5 @@ class Cliente extends Model
         });
     } 
     
-    
+
 }
