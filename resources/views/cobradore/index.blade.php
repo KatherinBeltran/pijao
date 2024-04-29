@@ -33,6 +33,7 @@
                 <th>No. de celular</th>
                 <th>Dirección</th>
                 <th>Barrio</th>
+                <th>Zona</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -44,7 +45,8 @@
                 <td>{{ $cobradore->num_ced_cob }}</td>
                 <td>{{ $cobradore->num_cel_cob }}</td>
                 <td>{{ $cobradore->dir_cob }}</td>
-                <td>{{ $cobradore->bar_cob }}</td>
+                <td>{{ $cobradore->barrio->nom_bar }}</td>
+				<td>{{ $cobradore->zona->nom_zon }}</td>
 
                 <td>
                     <form action="{{ route('cobradores.destroy',$cobradore->id) }}" method="POST">

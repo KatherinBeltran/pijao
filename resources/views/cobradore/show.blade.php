@@ -20,6 +20,10 @@
                     <div class="card-body">
                         
                         <div class="form-group">
+                            <strong>Código:</strong>
+                            {{ $cobradore->id }}
+                        </div>
+                        <div class="form-group">
                             <strong>Nombre:</strong>
                             {{ $cobradore->nom_cob }}
                         </div>
@@ -37,7 +41,11 @@
                         </div>
                         <div class="form-group">
                             <strong>Barrio:</strong>
-                            {{ $cobradore->bar_cob }}
+                            {{ $cobradore->barrio->nom_bar }}
+                        </div>
+                        <div class="form-group">
+                            <strong>Zona:</strong>
+                            {{ $cobradore->zona->nom_zon }}
                         </div>
 
                     </div>

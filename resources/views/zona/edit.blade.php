@@ -3,7 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <h1>Editar Cliente</h1>
+    <h1>Editar Zona</h1>
 @stop
 
 @section('content')
@@ -15,11 +15,11 @@
 
                 <div class="card card-default">
                     <div class="card-body">
-                        <form method="POST" action="{{ route('clientes.update', $cliente->id) }}"  role="form" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('zonas.update', $zona->id) }}"  role="form" enctype="multipart/form-data">
                             {{ method_field('PATCH') }}
                             @csrf
 
-                            @include('cliente.form')
+                            @include('zona.form')
 
                         </form>
                     </div>

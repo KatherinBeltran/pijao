@@ -17,7 +17,10 @@ return new class extends Migration
             $table->string('num_ced_cob', 10); // numero cedula cobrador
             $table->string('num_cel_cob', 10); // numero celular cobrador
             $table->string('dir_cob', 45); // direccion cobrador
-            $table->string('bar_cob', 45); // barrio cobrador
+            $table->unsignedInteger('bar_cob'); // barrio cobrador
+            $table->unsignedInteger('zon_cob'); // zona cobrador
+            $table->foreign('bar_cob')->references('id')->on('barrios');
+            $table->foreign('zon_cob')->references('id')->on('zonas');
             $table->timestamps();
         });
     }

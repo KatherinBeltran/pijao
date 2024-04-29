@@ -12,14 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('prestamos', function (Blueprint $table) {
-            $table->increments('id'); // codigo prestamo
-            $table->unsignedInteger('cli_pre'); // codigo cliente prestamo
+            $table->increments('id')->startingValue(101); // codigo prestamo
+            $table->string('nom_cli_pre', 45); // nombre cliente prestamo
+            $table->string('num_ced_cli_pre', 10); // numero cedula cliente prestamo
+            $table->string('num_cel_cli_pre', 10); // numero celular cliente prestamo
+            $table->string('dir_cli_pre', 45); // direccion cliente prestamo
+            $table->unsignedInteger('bar_cli_pre'); // barrio cliente prestamo
             $table->datetime('fec_pre')->nullable(); // fecha prestamo
             $table->datetime('fec_pag_ant_pre')->nullable(); // fecha pago anticipado prestamo
             $table->string('pag_pre', 10)->nullable(); // cobros y/o pagos prestamo
             $table->integer('cuo_pre')->nullable(); // cuotas prestamo
             $table->integer('cap_pre')->nullable(); // capital prestamo
-            $table->integer('int_pre'); // interes prestamo
+            $table->integer('int_pre')->nullable(); // interes prestamo
             $table->integer('tot_pre')->nullable(); // total prestamo
             $table->integer('val_cuo_pre')->nullable(); // valor cuota prestamo
             $table->integer('cuo_pag_pre')->nullable(); // cuotas pagadas prestamo
@@ -29,7 +33,7 @@ return new class extends Migration
             $table->integer('val_cuo_pen_pre')->nullable(); // valor cuotas pendientes prestamo
             $table->string('est_pag_pre')->nullable(); // estado pago prestamo
             $table->integer('dia_mor_pre')->nullable(); // dias mora prestamo
-            $table->foreign('cli_pre')->references('id')->on('clientes');
+            $table->foreign('bar_cli_pre')->references('id')->on('barrios');
             $table->timestamps();
         });
     }

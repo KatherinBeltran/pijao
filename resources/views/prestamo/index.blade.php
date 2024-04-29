@@ -27,11 +27,14 @@
     <table id="example" class="table table-striped table-bordered" style="width:100%">
         <thead class="thead">
         <tr>
-            <th>Código factura asignada</th>
-            <th>Código cliente</th>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>No. de cédula</th>
+            <th>No. de celular</th>
+            <th>Dirección</th>
+            <th>Barrio</th>
             <th>Fecha</th>
             <th>Fecha pago anticipado</th>
-            <th>Nombre</th>
             <th>Cobros y/o pagos</th>
             <th>Cuotas</th>
             <th>Capital</th>
@@ -53,10 +56,13 @@
             <tr>
                 <td>{{ $prestamo->id }}</td>
                 
-                <td>{{ $prestamo->cli_pre }}</td>
+                <td>{{ $prestamo->nom_cli_pre }}</td>
+                <td>{{ $prestamo->num_ced_cli_pre }}</td>
+                <td>{{ $prestamo->num_cel_cli_pre }}</td>
+                <td>{{ $prestamo->dir_cli_pre }}</td>
+                <td>{{ $prestamo->barrio->nom_bar }}</td>
                 <td>{{ $prestamo->fec_pre }}</td>
                 <td>{{ $prestamo->fec_pag_ant_pre }}</td>
-                <td>{{ $prestamo->cliente->nom_cli }}</td>
                 <td>{{ $prestamo->pag_pre }}</td>
                 <td>{{ $prestamo->cuo_pre }}</td>
                 <td>{{ $prestamo->cap_pre }}</td>

@@ -21,39 +21,39 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                <strong>Código cliente:</strong>
-                                {{ $cuota->cli_cuo }}
-                            </div>
-                            <div class="form-group">
-                                <strong>Nombre:</strong>
-                                {{ $cuota->cliente->nom_cli }}
-                            </div>
-                            <div class="form-group">
-                                <strong>No. de celular:</strong>
-                                {{ $cuota->cliente->num_cel_cli }}
-                            </div>
-                            <div class="form-group">
-                                <strong>Dirección:</strong>
-                                {{ $cuota->cliente->dir_cli }}
-                            </div>
-                            </div>
-                            <div class="col-md-6">
+                                    <strong>Nombre:</strong>
+                                    {{ $cuota->prestamo->nom_cli_pre }}
+                                </div>
                                 <div class="form-group">
-                                <strong>Código prestamo:</strong>
-                                {{ $cuota->pre_cuo }}
-                            </div>
-                            <div class="form-group">
-                                <strong>Cobros y/o pagos:</strong>
-                                {{ $cuota->prestamo->pag_pre }}
-                            </div>
-                            <div class="form-group">
-                                <strong>Fecha:</strong>
-                                {{ $cuota->prestamo->fec_pre }}
-                            </div>
-                            <div class="form-group">
-                                <strong>Total:</strong>
-                                {{ $cuota->prestamo->tot_pre }}
-                            </div>
+                                    <strong>No. de cédula:</strong>
+                                    {{ $cuota->prestamo->num_ced_cli_pre }}
+                                </div>
+                                <div class="form-group">
+                                    <strong>No. de celular:</strong>
+                                    {{ $cuota->prestamo->num_cel_cli_pre }}
+                                </div>
+                                <div class="form-group">
+                                    <strong>Dirección:</strong>
+                                    {{ $cuota->prestamo->dir_cli_pre }}
+                                </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                    <strong>Código prestamo:</strong>
+                                    {{ $cuota->pre_cuo }}
+                                </div>
+                                <div class="form-group">
+                                    <strong>Cobros y/o pagos:</strong>
+                                    {{ $cuota->prestamo->pag_pre }}
+                                </div>
+                                <div class="form-group">
+                                    <strong>Fecha:</strong>
+                                    {{ $cuota->prestamo->fec_pre }}
+                                </div>
+                                <div class="form-group">
+                                    <strong>Total:</strong>
+                                    {{ $cuota->prestamo->tot_pre }}
+                                </div>
                             </div>
                             <table>
                                 <tr>
@@ -62,6 +62,7 @@
                                     <th>Total abonado</th>
                                     <th>Saldo</th>
                                     <th>Número</th>
+                                    <th>Observación</th>
                                 </tr>
                                 @foreach($registrosIguales as $cuota)
                                     <tr>
@@ -70,6 +71,7 @@
                                         <td>{{ $cuota->tot_abo_cuo }}</td>
                                         <td>{{ $cuota->sal_cuo }}</td>
                                         <td>{{ $cuota->num_cuo }}</td>
+                                        <td>{{ $cuota->obs_cuo }}</td>
                                     </tr>
                                 @endforeach
                             </table>

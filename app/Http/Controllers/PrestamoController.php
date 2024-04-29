@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Prestamo;
 use Illuminate\Http\Request;
-use App\Models\Cliente;
+use App\Models\Barrio;
 use Carbon\Carbon;
 
 /**
@@ -41,19 +41,13 @@ class PrestamoController extends Controller
      */
     public function create()
     {
-        // Obtener los códigos de cliente (IDs)
-        $clientes = Cliente::pluck('id', 'id');
-
         $prestamo = new Prestamo();
-        
-        // Verificar si ya hay un valor en cli_pre
-        $cliente_id = $prestamo->cli_pre ? $prestamo->cli_pre : null;
-    
+        $barrios = Barrio::all();
+
         // Obtener la fecha y hora actual en el formato adecuado
         $now = Carbon::now('America/Bogota')->toDateTimeString();
         
-        // Pasar los clientes y el prestamo a la vista
-        return view('prestamo.create', compact('clientes', 'prestamo', 'now', 'cliente_id'));
+        return view('prestamo.create', compact('prestamo', 'barrios', 'now'));
     }    
 
     /**
@@ -64,9 +58,42 @@ class PrestamoController extends Controller
      */
     public function store(Request $request)
     {
+        // Mensajes de validación personalizados en español
+        $messages = [
+            'nom_cli_pre.required' => 'El nombre del cliente es obligatorio.',
+            'num_ced_cli_pre.required' => 'La cédula del cliente es obligatoria.',
+            'num_ced_cli_pre.unique' => 'Ya existe un cliente con esta cédula.',
+            'num_cel_cli_pre.required' => 'El número de teléfono del cliente es obligatorio.',
+            'dir_cli_pre.required' => 'La dirección del cliente es obligatoria.',
+            'bar_cli_pre.required' => 'El barrio del cliente es obligatorio.',
+            'pag_pre.required' => 'El cobros y/o pagos del prestamo es obligatorio.',
+            'cuo_pre.required' => 'El número de cuotas del prestamo es obligatorio.',
+            'cap_pre.required' => 'El capital del prestamo es obligatorio.',
+        ];
+
+        // Validación personalizada para verificar si la cédula ya existe
+        $request->validate([
+            'nom_cli_pre' => 'required',
+            'num_ced_cli_pre' => 'required|unique:prestamos,num_ced_cli_pre',
+            'num_cel_cli_pre' => 'required',
+            'dir_cli_pre' => 'required',
+            'bar_cli_pre' => 'required',
+            'pag_pre' => 'required',
+            'cuo_pre' => 'required',
+            'cap_pre' => 'required',
+        ], $messages);
+
         request()->validate(Prestamo::$rules);
 
-        $prestamo = Prestamo::create($request->all());
+        $fechaHoraActual = now()->setTimezone('America/Bogota')->toDateTimeString();
+
+        // Establecer el valor de val_pag_pre a 0 e int_pre a 20 antes de crear el registro
+        $data = $request->all();
+        $data['fec_pre'] = $fechaHoraActual;
+        $data['val_pag_pre'] = 0;
+        $data['int_pre'] = 20;
+
+        $prestamo = Prestamo::create($data);
 
         return redirect()->route('prestamos.index')
             ->with('success', '<div class="alert alert-success alert-dismissible">
@@ -96,14 +123,9 @@ class PrestamoController extends Controller
      */
     public function edit($id)
     {
-        // Obtener los códigos de cliente (IDs)
-        $clientes = Cliente::pluck('id', 'id');
-        
         $prestamo = Prestamo::find($id);
-    
-        // Verificar si ya hay un valor en cli_pre
-        $cliente_id = $prestamo->cli_pre ?? null;
-    
+        $barrios = Barrio::all();
+
         // Verificar si el campo de fecha y hora está vacío
         if (empty($prestamo->fec_pre)) {
             // Obtener la fecha y hora actual en el formato adecuado
@@ -113,7 +135,7 @@ class PrestamoController extends Controller
             $now = $prestamo->fec_pre;
         }
     
-        return view('prestamo.edit', compact('prestamo', 'clientes', 'cliente_id', 'now'));
+        return view('prestamo.edit', compact('prestamo', 'barrios', 'now'));
     }    
 
     /**

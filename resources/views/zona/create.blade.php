@@ -3,7 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <h1>Nuevo Cliente</h1>
+    <h1>Nueva Zona</h1>
 @stop
 
 @section('content')
@@ -15,10 +15,10 @@
 
                 <div class="card card-default">
                     <div class="card-body">
-                        <form method="POST" action="{{ route('clientes.store') }}"  role="form" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('zonas.store') }}"  role="form" enctype="multipart/form-data">
                             @csrf
 
-                            @include('cliente.form')
+                            @include('zona.form')
 
                         </form>
                     </div>

@@ -8,7 +8,11 @@ use Illuminate\Database\Eloquent\Model;
  * Class Prestamo
  *
  * @property $id
- * @property $cli_pre
+ * @property $nom_cli_pre
+ * @property $num_ced_cli_pre
+ * @property $num_cel_cli_pre
+ * @property $dir_cli_pre
+ * @property $bar_cli_pre
  * @property $fec_pre
  * @property $fec_pag_ant_pre
  * @property $pag_pre
@@ -27,7 +31,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property $created_at
  * @property $updated_at
  *
- * @property Cliente $cliente
+ * @property Barrio $barrio
  * @property Cuota[] $cuotas
  * @package App
  * @mixin \Illuminate\Database\Eloquent\Builder
@@ -36,8 +40,11 @@ class Prestamo extends Model
 {
     
     static $rules = [
-		'cli_pre' => 'required',
-		'int_pre' => 'required',
+		'nom_cli_pre' => 'required',
+		'num_ced_cli_pre' => 'required',
+		'num_cel_cli_pre' => 'required',
+		'dir_cli_pre' => 'required',
+		'bar_cli_pre' => 'required',
     ];
 
     protected $perPage = 20;
@@ -47,15 +54,15 @@ class Prestamo extends Model
      *
      * @var array
      */
-    protected $fillable = ['cli_pre','fec_pre','fec_pag_ant_pre','pag_pre','cuo_pre','cap_pre','int_pre','tot_pre','val_cuo_pre','cuo_pag_pre','val_pag_pre','sig_cuo_pre','cuo_pen_pre','val_cuo_pen_pre','est_pag_pre','dia_mor_pre'];
+    protected $fillable = ['nom_cli_pre','num_ced_cli_pre','num_cel_cli_pre','dir_cli_pre','bar_cli_pre','fec_pre','fec_pag_ant_pre','pag_pre','cuo_pre','cap_pre','int_pre','tot_pre','val_cuo_pre','cuo_pag_pre','val_pag_pre','sig_cuo_pre','cuo_pen_pre','val_cuo_pen_pre','est_pag_pre','dia_mor_pre'];
 
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function cliente()
+    public function barrio()
     {
-        return $this->hasOne('App\Models\Cliente', 'id', 'cli_pre');
+        return $this->hasOne('App\Models\Barrio', 'id', 'bar_cli_pre');
     }
     
     /**
@@ -64,7 +71,19 @@ class Prestamo extends Model
     public function cuotas()
     {
         return $this->hasMany('App\Models\Cuota', 'pre_cuo', 'id');
-    }
+    } 
+
+    protected static function boot()
+    {
+        parent::boot();
     
+        static::created(function ($prestamo) {    
+            // Crear un nuevo registro en la tabla de cuotas
+            $cuota = new Cuota();
+            $cuota->pre_cuo = $prestamo->id;
+            $cuota->num_cuo = 1;
+            $cuota->save();
+        });
+    } 
 
 }

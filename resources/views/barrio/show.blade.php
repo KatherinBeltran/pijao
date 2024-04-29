@@ -3,7 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <h1>Ver Cliente</h1>
+    <h1>Ver Barrio</h1>
 @stop
 
 @section('content')
@@ -13,31 +13,23 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="float-right">
-                            <a class="btn btn-outline-danger btn-sm custom-btn" href="{{ route('clientes.index') }}"> {{ __('Volver') }}</a>
+                            <a class="btn btn-outline-danger btn-sm custom-btn" href="{{ route('barrios.index') }}"> {{ __('Volver') }}</a>
                         </div>
                     </div>
 
                     <div class="card-body">
                         
                         <div class="form-group">
+                            <strong>Código:</strong>
+                            {{ $barrio->id }}
+                        </div>
+                        <div class="form-group">
                             <strong>Nombre:</strong>
-                            {{ $cliente->nom_cli }}
+                            {{ $barrio->nom_bar }}
                         </div>
                         <div class="form-group">
-                            <strong>No. de cédula:</strong>
-                            {{ $cliente->num_ced_cli }}
-                        </div>
-                        <div class="form-group">
-                            <strong>No. de celular:</strong>
-                            {{ $cliente->num_cel_cli }}
-                        </div>
-                        <div class="form-group">
-                            <strong>Dirección:</strong>
-                            {{ $cliente->dir_cli }}
-                        </div>
-                        <div class="form-group">
-                            <strong>Barrio:</strong>
-                            {{ $cliente->bar_cli }}
+                            <strong>Zona:</strong>
+                            {{ $barrio->zona->nom_zon }}
                         </div>
 
                     </div>
@@ -49,6 +41,22 @@
 
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
+
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: 2px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 @stop
 
 @section('js')

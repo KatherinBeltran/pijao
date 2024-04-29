@@ -21,8 +21,28 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <strong>Código cliente:</strong>
-                                    {{ $prestamo->cli_pre }}
+                                    <strong>Código:</strong>
+                                    {{ $prestamo->id }}
+                                </div>
+                                <div class="form-group">
+                                    <strong>Nombre:</strong>
+                                    {{ $prestamo->nom_cli_pre }}
+                                </div>
+                                <div class="form-group">
+                                    <strong>No. de cédula:</strong>
+                                    {{ $prestamo->num_ced_cli_pre }}
+                                </div>
+                                <div class="form-group">
+                                    <strong>No. de celular:</strong>
+                                    {{ $prestamo->num_cel_cli_pre }}
+                                </div>
+                                <div class="form-group">
+                                    <strong>Dirección:</strong>
+                                    {{ $prestamo->dir_cli_pre }}
+                                </div>
+                                <div class="form-group">
+                                    <strong>Barrio:</strong>
+                                    {{ $prestamo->barrio->nom_bar }}
                                 </div>
                                 <div class="form-group">
                                     <strong>Fecha:</strong>
@@ -44,6 +64,8 @@
                                     <strong>Capital:</strong>
                                     {{ $prestamo->cap_pre }}
                                 </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <strong>Interes %:</strong>
                                     {{ $prestamo->int_pre }}
@@ -52,8 +74,6 @@
                                     <strong>Total:</strong>
                                     {{ $prestamo->tot_pre }}
                                 </div>
-                            </div>
-                            <div class="col-md-6">
                                 <div class="form-group">
                                     <strong>Valor cuota:</strong>
                                     {{ $prestamo->val_cuo_pre }}

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Cobradore;
 use Illuminate\Http\Request;
+use App\Models\Barrio;
+use App\Models\Zona;
 
 /**
  * Class CobradoreController
@@ -40,7 +42,10 @@ class CobradoreController extends Controller
     public function create()
     {
         $cobradore = new Cobradore();
-        return view('cobradore.create', compact('cobradore'));
+        $barrios = Barrio::all();
+        $zonas = Zona::all();
+
+        return view('cobradore.create', compact('cobradore', 'barrios', 'zonas'));
     }
 
     /**
@@ -101,8 +106,10 @@ class CobradoreController extends Controller
     public function edit($id)
     {
         $cobradore = Cobradore::find($id);
-
-        return view('cobradore.edit', compact('cobradore'));
+        $barrios = Barrio::all();
+        $zonas = Zona::all();
+        
+        return view('cobradore.edit', compact('cobradore', 'barrios', 'zonas'));
     }
 
     /**

@@ -23,8 +23,13 @@
         </div>
         <div class="form-group">
             {{ Form::label('Barrio') }}
-            {{ Form::text('bar_cob', $cobradore->bar_cob, ['class' => 'form-control' . ($errors->has('bar_cob') ? ' is-invalid' : ''), 'placeholder' => 'Barrio']) }}
+            {{ Form::select('bar_cob', $barrios->pluck('nom_bar', 'id'), $cobradore->bar_cob, ['class' => 'form-control' . ($errors->has('bar_cob') ? ' is-invalid' : ''), 'placeholder' => 'Seleccione un barrio']) }}
             {!! $errors->first('bar_cob', '<div class="invalid-feedback">:message</div>') !!}
+        </div>
+        <div class="form-group">
+            {{ Form::label('Zona') }}
+            {{ Form::select('zon_cob', $zonas->pluck('nom_zon', 'id'), $cobradore->zon_cob, ['class' => 'form-control' . ($errors->has('zon_cob') ? ' is-invalid' : ''), 'placeholder' => 'Seleccione una zona']) }}
+            {!! $errors->first('zon_cob', '<div class="invalid-feedback">:message</div>') !!}
         </div>
 
     </div>

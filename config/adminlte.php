@@ -332,10 +332,16 @@ return [
             ],
         ],
         [
-            'text'    => 'Clientes',
-            'url'  => 'clientes',
-            'icon'    => 'fa fa-address-book fa-2x',
-            'can' => ['clientes.index'],
+            'text'    => 'Zonas',
+            'url'  => 'zonas',
+            'icon'    => 'fa fa-map fa-2x',
+            'can' => ['zonas.index'],
+        ],
+        [
+            'text'    => 'Barrios',
+            'url'  => 'barrios',
+            'icon'    => 'fa fa-home fa-2x',
+            'can' => ['barrios.index'],
         ],
         [
             'text'    => 'Cobradores',

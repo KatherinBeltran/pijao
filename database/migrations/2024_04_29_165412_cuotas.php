@@ -13,14 +13,13 @@ return new class extends Migration
     {
         Schema::create('cuotas', function (Blueprint $table) {
             $table->increments('id'); // codigo cuota
-            $table->unsignedInteger('cli_cuo'); // codigo cliente cuota
             $table->unsignedInteger('pre_cuo'); // prestamo cuota
             $table->datetime('fec_cuo')->nullable();// fecha cuota
             $table->integer('val_cuo')->nullable(); // valor cuota
             $table->integer('tot_abo_cuo')->nullable(); // total abonado cuota
             $table->integer('sal_cuo')->nullable(); // saldo cuota
             $table->integer('num_cuo')->nullable(); // numero cuota
-            $table->foreign('cli_cuo')->references('id')->on('clientes');
+            $table->string('obs_cuo', 1000)->nullable(); // observacion cuota
             $table->foreign('pre_cuo')->references('id')->on('prestamos');
             $table->timestamps();
         });

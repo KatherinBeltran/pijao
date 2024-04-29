@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Cuota;
 use Illuminate\Http\Request;
-use App\Models\Cliente;
 use App\Models\Prestamo;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -31,14 +30,13 @@ class CuotaController extends Controller
     public function index()
     {
         $cuotas = Cuota::select('cuotas.*')
-            ->join(DB::raw('(SELECT MAX(id) AS id FROM cuotas GROUP BY cli_cuo, pre_cuo) AS sub'), function ($join) {
+            ->join(DB::raw('(SELECT MAX(id) AS id FROM cuotas GROUP BY pre_cuo) AS sub'), function ($join) {
                 $join->on('cuotas.id', '=', 'sub.id');
             })
             /*->whereNotExists(function ($query) {
                 $query->selectRaw('1')
                     ->from('prestamos')
                     ->whereRaw('prestamos.cuo_pre = cuotas.num_cuo')
-                    ->whereRaw('cuotas.cli_cuo IS NOT NULL')
                     ->whereRaw('cuotas.pre_cuo IS NOT NULL')
                     ->whereRaw('cuotas.fec_cuo IS NOT NULL')
                     ->whereRaw('cuotas.val_cuo IS NOT NULL')
@@ -61,8 +59,7 @@ class CuotaController extends Controller
      */
     public function create()
     {
-        // Obtener los códigos de cliente y prestamo (IDs)
-        $clientes = Cliente::pluck('id', 'id');
+        // Obtener el código de prestamo (IDs)
         $prestamos = Prestamo::pluck('id', 'id');
     
         $cuota = new Cuota();
@@ -70,14 +67,13 @@ class CuotaController extends Controller
         // Asignar la fecha y hora actual al campo fec_cuo
         $cuota->fec_cuo = Carbon::now('America/Bogota')->toDateTimeString();
     
-        // Verificar si ya hay un valor en cli_cuo y pre_cuo
-        $cliente_id = $cuota->cli_cuo ? $cuota->cli_cuo : null;
+        // Verificar si ya hay un valor en pre_cuo
         $prestamo_id = $cuota->pre_cuo ? $cuota->pre_cuo : null;
     
         $primer_prestamo_id = $prestamos->first();
         $prestamo = Prestamo::findOrFail($primer_prestamo_id);
     
-        return view('cuota.create', compact('cuota', 'clientes', 'cliente_id', 'prestamos', 'prestamo_id', 'prestamo'));
+        return view('cuota.create', compact('cuota', 'prestamos', 'prestamo_id', 'prestamo'));
     }
     
     public function obtenerTotPre($prestamo_id)
@@ -118,9 +114,8 @@ class CuotaController extends Controller
     {
         $cuota = Cuota::find($id);
 
-        // Recuperar registros con cli_cuo y pre_cuo iguales
-        $registrosIguales = Cuota::where('cli_cuo', $cuota->cli_cuo)
-                                ->where('pre_cuo', $cuota->pre_cuo)
+        // Recuperar registro con pre_cuo iguales
+        $registrosIguales = Cuota::where('pre_cuo', $cuota->pre_cuo)
                                 ->get();
 
         return view('cuota.show', compact('cuota', 'registrosIguales'));
@@ -134,8 +129,7 @@ class CuotaController extends Controller
      */
     public function edit($id)
     {
-        // Obtener los códigos de cliente y prestamo (IDs)
-        $clientes = Cliente::pluck('id', 'id');
+        // Obtener el código de prestamo (IDs)
         $prestamos = Prestamo::pluck('id', 'id');
     
         $cuota = Cuota::find($id);
@@ -143,13 +137,12 @@ class CuotaController extends Controller
         // Asignar la fecha y hora actual al campo fec_cuo
         $cuota->fec_cuo = Carbon::now('America/Bogota')->toDateTimeString();
     
-        // Verificar si ya hay un valor en cli_cuo y pre_cuo
-        $cliente_id = $cuota->cli_cuo ?? null;
+        // Verificar si ya hay un valor en pre_cuo
         $prestamo_id = $cuota->pre_cuo ?? null;
     
         $prestamo = Prestamo::findOrFail($cuota->pre_cuo);
     
-        return view('cuota.edit', compact('cuota', 'clientes', 'cliente_id', 'prestamos', 'prestamo_id', 'prestamo'));
+        return view('cuota.edit', compact('cuota', 'prestamos', 'prestamo_id', 'prestamo'));
     }
 
     /**
@@ -175,7 +168,6 @@ class CuotaController extends Controller
 
             // Crear un nuevo registro de cuota con los campos específicos
             Cuota::create([
-                'cli_cuo' => $request->cli_cuo,
                 'pre_cuo' => $request->pre_cuo,
                 'num_cuo' => $cuotas_existentes,
             ]);
@@ -186,6 +178,7 @@ class CuotaController extends Controller
                 'val_cuo' => $request->val_cuo,
                 'tot_abo_cuo' => $request->tot_abo_cuo,
                 'sal_cuo' => $request->sal_cuo,
+                'obs_cuo' => $request->obs_cuo,
             ]);
 
             // Después de realizar la actualización de la cuota, obtenemos el valor de num_cuo
@@ -227,12 +220,12 @@ class CuotaController extends Controller
 
         // Si el número de cuotas existentes ya es igual a cuo_pre, solo actualizamos el registro actual
         $cuota->update([
-            'cli_cuo' => $request->cli_cuo,
             'pre_cuo' => $request->pre_cuo,
             'fec_cuo' => $request->fec_cuo,
             'val_cuo' => $request->val_cuo,
             'tot_abo_cuo' => $request->tot_abo_cuo,
             'sal_cuo' => $request->sal_cuo,
+            'obs_cuo' => $request->obs_cuo,
         ]);
 
         // Después de realizar la actualización de la cuota, obtenemos el valor de num_cuo

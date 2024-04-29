@@ -2,11 +2,6 @@
     <div class="box-body">
         
         <div class="form-group">
-            {{ Form::label('Código cliente') }}
-            {{ Form::select('cli_cuo', $clientes, $cliente_id, ['class' => 'form-control', 'id' => 'cli_cuo_select', 'placeholder' => 'Seleccione un código de cliente']) }}
-            {!! $errors->first('cli_cuo', '<div class="invalid-feedback">:message</div>') !!}
-        </div>
-        <div class="form-group">
             {{ Form::label('Código préstamo') }}
             {{ Form::select('pre_cuo', $prestamos,  $prestamo_id, ['class' => 'form-control', 'id' => 'pre_cuo_select', 'placeholder' => 'Seleccione un código de prestamo']) }}
             {!! $errors->first('pre_cuo', '<div class="invalid-feedback">:message</div>') !!}
@@ -35,6 +30,11 @@
             {{ Form::label('Número') }}
             {{ Form::text('num_cuo', $cuota->num_cuo, ['class' => 'form-control' . ($errors->has('num_cuo') ? ' is-invalid' : ''), 'placeholder' => 'Número', 'readonly' => 'disabled']) }}
             {!! $errors->first('num_cuo', '<div class="invalid-feedback">:message</div>') !!}
+        </div>
+        <div class="form-group">
+            {{ Form::label('Observación') }}
+            {{ Form::text('obs_cuo', $cuota->obs_cuo, ['class' => 'form-control' . ($errors->has('obs_cuo') ? ' is-invalid' : ''), 'placeholder' => 'Observación']) }}
+            {!! $errors->first('obs_cuo', '<div class="invalid-feedback">:message</div>') !!}
         </div>
 
     </div>

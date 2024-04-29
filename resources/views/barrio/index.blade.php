@@ -3,10 +3,10 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <h1>Lista de clientes</h1>
+    <h1>Lista de barrios</h1>
 
     <div class="float-right">
-        <a href="{{ route('clientes.create') }}" class="btn btn-block btn-outline-success btn-sm float-right"  data-placement="left">
+        <a href="{{ route('barrios.create') }}" class="btn btn-block btn-outline-success btn-sm float-right" data-placement="left">
             {{ __('Nuevo') }}
         </a>
     </div>
@@ -29,32 +29,26 @@
             <tr>
                 <th>Código</th>
                 <th>Nombre</th>
-                <th>No. de cédula</th>
-                <th>No. de celular</th>
-                <th>Dirección</th>
-                <th>Barrio</th>
+                <th>Zona</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($clientes as $cliente)
-                <td>{{ $cliente->id }}</td>
-                                            
-                <td>{{ $cliente->nom_cli }}</td>
-                <td>{{ $cliente->num_ced_cli }}</td>
-                <td>{{ $cliente->num_cel_cli }}</td>
-                <td>{{ $cliente->dir_cli }}</td>
-                <td>{{ $cliente->bar_cli }}</td>
+            @foreach ($barrios as $barrio)
+                <tr>
+                    <td>{{ ++$i }}</td>
+                    <td>{{ $barrio->nom_bar }}</td>
+                    <td>{{ $barrio->zona->nom_zon }}</td>
 
-                <td>
-                    <form action="{{ route('clientes.destroy',$cliente->id) }}" method="POST">
-                        <a class="btn btn-sm btn-info" href="{{ route('clientes.show',$cliente->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('') }}</a>
-                        <a class="btn btn-sm btn-warning" href="{{ route('clientes.edit',$cliente->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('') }}</a>
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> {{ __('') }}</button>
-                    </form>
-                </td>
+                    <td>
+                        <form action="{{ route('barrios.destroy',$barrio->id) }}" method="POST">
+                            <a class="btn btn-sm btn-info" href="{{ route('barrios.show',$barrio->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('') }}</a>
+                            <a class="btn btn-sm btn-warning" href="{{ route('barrios.edit',$barrio->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('') }}</a>
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> {{ __('') }}</button>
+                        </form>
+                    </td>
                 </tr>
             @endforeach
         </tbody>
@@ -68,11 +62,16 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap4.min.css">
 
     <style>
-    #example_wrapper .paginate_button.page-item.active > a.page-link {
-    background-color: lightgray !important;
-    color: black !important;
-    border-color: gray !important;
-    }
+        #example_wrapper .paginate_button.page-item.active > a.page-link {
+            background-color: lightgray !important;
+            color: black !important;
+            border-color: gray !important;
+        }
+
+        .row-green {
+            background-color: green !important;
+            color: white !important;
+        }
     </style>
 @stop
 
