@@ -74,7 +74,17 @@
                 <td>{{ $prestamo->sig_cuo_pre }}</td>
                 <td>{{ $prestamo->cuo_pen_pre }}</td>
                 <td>{{ $prestamo->val_cuo_pen_pre }}</td>
-                <td>{{ $prestamo->est_pag_pre }}</td>
+                <td>
+                    @if ($prestamo->est_pag_pre == 'Al día')
+                        <span class="badge badge-success">{{ $prestamo->est_pag_pre }}</span>
+                    @elseif ($prestamo->est_pag_pre == 'En mora')
+                        <span class="badge badge-danger">{{ $prestamo->est_pag_pre }}</span>
+                    @elseif ($prestamo->est_pag_pre == 'Pendiente')
+                        <span class="badge badge-info">{{ $prestamo->est_pag_pre }}</span>
+                    @else
+                        {{ $prestamo->est_pag_pre }}
+                    @endif
+                </td>
                 <td>{{ $prestamo->dia_mor_pre }}</td>
 
                 <td>

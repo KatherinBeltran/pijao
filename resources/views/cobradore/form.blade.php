@@ -17,6 +17,11 @@
             {!! $errors->first('num_cel_cob', '<div class="invalid-feedback">:message</div>') !!}
         </div>
         <div class="form-group">
+            {{ Form::label('Correo electrónico') }}
+            {{ Form::text('cor_ele_cob', $cobradore->cor_ele_cob, ['class' => 'form-control' . ($errors->has('cor_ele_cob') ? ' is-invalid' : ''), 'value' => "@inversionespijao.com", 'id' => 'cor_ele_cob', 'placeholder' => 'Correo electrónico']) }}
+            {!! $errors->first('cor_ele_cob', '<div class="invalid-feedback">:message</div>') !!}
+        </div>
+        <div class="form-group">
             {{ Form::label('Dirección') }}
             {{ Form::text('dir_cob', $cobradore->dir_cob, ['class' => 'form-control' . ($errors->has('dir_cob') ? ' is-invalid' : ''), 'placeholder' => 'Dirección']) }}
             {!! $errors->first('dir_cob', '<div class="invalid-feedback">:message</div>') !!}
@@ -38,3 +43,21 @@
         <a href="{{ route('cobradores.index') }}" class="btn btn-outline-danger btn-sm custom-btn">Cancelar</a>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const emailInput = document.getElementById('cor_ele_cob');
+        const domain = '@inversionespijao.com';
+
+        emailInput.addEventListener('focus', function () {
+            // Cuando el campo recibe el enfoque, asegúrate de que el usuario pueda editar el campo completo
+            emailInput.value = emailInput.value.replace(domain, '');
+        });
+
+        emailInput.addEventListener('blur', function () {
+            // Al salir del campo, vuelve a agregar el dominio si es necesario
+            if (emailInput.value.trim() !== '' && !emailInput.value.includes(domain)) {
+            emailInput.value += domain;
+            }
+        });
+    });
+</script>

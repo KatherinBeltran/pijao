@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nom_cob', 45); // nombre cobrador
             $table->string('num_ced_cob', 10); // numero cedula cobrador
             $table->string('num_cel_cob', 10); // numero celular cobrador
+            $table->string('cor_ele_cob', 45); // correo electronico cobrador
             $table->string('dir_cob', 45); // direccion cobrador
             $table->unsignedInteger('bar_cob'); // barrio cobrador
             $table->unsignedInteger('zon_cob'); // zona cobrador

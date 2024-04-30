@@ -31,6 +31,7 @@
                 <th>Nombre</th>
                 <th>No. de cédula</th>
                 <th>No. de celular</th>
+                <th>Correo electrónico</th>
                 <th>Dirección</th>
                 <th>Barrio</th>
                 <th>Zona</th>
@@ -44,6 +45,7 @@
                 <td>{{ $cobradore->nom_cob }}</td>
                 <td>{{ $cobradore->num_ced_cob }}</td>
                 <td>{{ $cobradore->num_cel_cob }}</td>
+                <td>{{ $cobradore->cor_ele_cob }}</td>
                 <td>{{ $cobradore->dir_cob }}</td>
                 <td>{{ $cobradore->barrio->nom_bar }}</td>
 				<td>{{ $cobradore->zona->nom_zon }}</td>

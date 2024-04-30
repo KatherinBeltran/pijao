@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Prestamo;
 
 class HomeController extends Controller
 {
@@ -23,6 +24,18 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        // Verificar si el usuario autenticado es un administrador
+        $esAdmin = auth()->user()->hasRole('Administrador');
+
+        // Tu lógica para obtener los datos de la tabla de prestamos
+        $prestamos = Prestamo::all();
+    
+        // Verifica si hay prestamos pendientes
+        $prestamosPendientes = $prestamos->contains('est_pag_pre', 'Pendiente');
+
+        return view('home', [
+            'prestamosPendientes' => $prestamosPendientes,
+            'esAdmin' => $esAdmin,
+        ]);
     }
 }

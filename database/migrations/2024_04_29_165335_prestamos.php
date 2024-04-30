@@ -31,7 +31,7 @@ return new class extends Migration
             $table->integer('sig_cuo_pre')->nullable(); // siguiente cuota prestamo
             $table->integer('cuo_pen_pre')->nullable(); // cuotas pendientes prestamo
             $table->integer('val_cuo_pen_pre')->nullable(); // valor cuotas pendientes prestamo
-            $table->string('est_pag_pre')->nullable(); // estado pago prestamo
+            $table->string('est_pag_pre', 10)->nullable(); // estado pago prestamo
             $table->integer('dia_mor_pre')->nullable(); // dias mora prestamo
             $table->foreign('bar_cli_pre')->references('id')->on('barrios');
             $table->timestamps();

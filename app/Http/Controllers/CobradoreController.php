@@ -6,6 +6,8 @@ use App\Models\Cobradore;
 use Illuminate\Http\Request;
 use App\Models\Barrio;
 use App\Models\Zona;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 /**
  * Class CobradoreController
@@ -62,6 +64,7 @@ class CobradoreController extends Controller
             'num_ced_cob.required' => 'La cédula del cobrador es obligatoria.',
             'num_ced_cob.unique' => 'Ya existe un cobrador con esta cédula.',
             'num_cel_cob.required' => 'El número de teléfono del cobrador es obligatorio.',
+            'cor_ele_cob.required' => 'El correo electrónico del cobrador es obligatorio.',
             'dir_cob.required' => 'La dirección del cobrador es obligatoria.',
             'bar_cob.required' => 'El barrio del cobrador es obligatorio.',
         ];
@@ -71,11 +74,22 @@ class CobradoreController extends Controller
             'nom_cob' => 'required',
             'num_ced_cob' => 'required|unique:cobradores,num_ced_cob',
             'num_cel_cob' => 'required',
+            'cor_ele_cob' => 'required',
             'dir_cob' => 'required',
             'bar_cob' => 'required',
         ], $messages);
 
         $cobradores = Cobradore::create($request->all());
+
+        $user = new User([
+            'name' => $cobradores->nom_cob,
+            'email' => $cobradores->cor_ele_cob,
+            'password' => bcrypt('Inv' . $cobradores->num_ced_cob),
+        ]);
+        $user->save();
+
+        $cobradoreRole = Role::where('name', 'Cobrador')->first();
+        $user->assignRole($cobradoreRole);
 
         return redirect()->route('cobradores.index')
             ->with('success', '<div class="alert alert-success alert-dismissible">

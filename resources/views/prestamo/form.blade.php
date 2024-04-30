@@ -95,13 +95,17 @@
                 {!! $errors->first('val_cuo_pen_pre', '<div class="invalid-feedback">:message</div>') !!}
             </div>
             <div class="form-group">
-                {{ Form::label('Estado') }}
-                {{ Form::text('est_pag_pre', $prestamo->est_pag_pre, ['class' => 'form-control' . ($errors->has('est_pag_pre') ? ' is-invalid' : ''), 'placeholder' => 'Estado']) }}
+                {{ Form::label('est_pag_pre', 'Estado') }}
+                @if (Route::currentRouteName() === 'prestamos.edit')
+                {{ Form::select('est_pag_pre', ['Al día' => 'Al día', 'En mora' => 'En mora', 'Pendiente' => 'Pendiente'], $prestamo->est_pag_pre, ['class' => 'form-control' . ($errors->has('est_pag_pre') ? ' is-invalid' : '')]) }}
+                @else
+                {{ Form::select('est_pag_pre', ['Al día' => 'Al día', 'En mora' => 'En mora', 'Pendiente' => 'Pendiente'], 'pendiente', ['class' => 'form-control' . ($errors->has('est_pag_pre') ? ' is-invalid' : ''), 'disabled' => 'disabled']) }}
+                @endif
                 {!! $errors->first('est_pag_pre', '<div class="invalid-feedback">:message</div>') !!}
             </div>
             <div class="form-group">
                 {{ Form::label('Dias en mora') }}
-                {{ Form::text('dia_mor_pre', $prestamo->dia_mor_pre, ['class' => 'form-control' . ($errors->has('dia_mor_pre') ? ' is-invalid' : ''), 'placeholder' => 'Dias en mora']) }}
+                {{ Form::text('dia_mor_pre', $prestamo->dia_mor_pre, ['class' => 'form-control' . ($errors->has('dia_mor_pre') ? ' is-invalid' : ''), 'placeholder' => 'Dias en mora', 'readonly' => 'disabled']) }}
                 {!! $errors->first('dia_mor_pre', '<div class="invalid-feedback">:message</div>') !!}
             </div>
         </div>

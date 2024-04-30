@@ -6,6 +6,7 @@ use App\Models\Prestamo;
 use Illuminate\Http\Request;
 use App\Models\Barrio;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class PrestamoController
@@ -57,50 +58,65 @@ class PrestamoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        // Mensajes de validación personalizados en español
-        $messages = [
-            'nom_cli_pre.required' => 'El nombre del cliente es obligatorio.',
-            'num_ced_cli_pre.required' => 'La cédula del cliente es obligatoria.',
-            'num_ced_cli_pre.unique' => 'Ya existe un cliente con esta cédula.',
-            'num_cel_cli_pre.required' => 'El número de teléfono del cliente es obligatorio.',
-            'dir_cli_pre.required' => 'La dirección del cliente es obligatoria.',
-            'bar_cli_pre.required' => 'El barrio del cliente es obligatorio.',
-            'pag_pre.required' => 'El cobros y/o pagos del prestamo es obligatorio.',
-            'cuo_pre.required' => 'El número de cuotas del prestamo es obligatorio.',
-            'cap_pre.required' => 'El capital del prestamo es obligatorio.',
-        ];
+{
+    // Mensajes de validación personalizados en español
+    $messages = [
+        'nom_cli_pre.required' => 'El nombre del cliente es obligatorio.',
+        'num_ced_cli_pre.required' => 'La cédula del cliente es obligatoria.',
+        'num_ced_cli_pre.unique' => 'Ya existe un cliente con esta cédula.',
+        'num_cel_cli_pre.required' => 'El número de teléfono del cliente es obligatorio.',
+        'dir_cli_pre.required' => 'La dirección del cliente es obligatoria.',
+        'bar_cli_pre.required' => 'El barrio del cliente es obligatorio.',
+        'pag_pre.required' => 'El cobros y/o pagos del prestamo es obligatorio.',
+        'cuo_pre.required' => 'El número de cuotas del prestamo es obligatorio.',
+        'cap_pre.required' => 'El capital del prestamo es obligatorio.',
+    ];
 
-        // Validación personalizada para verificar si la cédula ya existe
-        $request->validate([
-            'nom_cli_pre' => 'required',
-            'num_ced_cli_pre' => 'required|unique:prestamos,num_ced_cli_pre',
-            'num_cel_cli_pre' => 'required',
-            'dir_cli_pre' => 'required',
-            'bar_cli_pre' => 'required',
-            'pag_pre' => 'required',
-            'cuo_pre' => 'required',
-            'cap_pre' => 'required',
-        ], $messages);
+    // Validación personalizada para verificar si la cédula ya existe
+    $request->validate([
+        'nom_cli_pre' => 'required',
+        'num_ced_cli_pre' => 'required|unique:prestamos,num_ced_cli_pre',
+        'num_cel_cli_pre' => 'required',
+        'dir_cli_pre' => 'required',
+        'bar_cli_pre' => 'required',
+        'pag_pre' => 'required',
+        'cuo_pre' => 'required',
+        'cap_pre' => 'required',
+    ], $messages);
 
-        request()->validate(Prestamo::$rules);
+    request()->validate(Prestamo::$rules);
 
-        $fechaHoraActual = now()->setTimezone('America/Bogota')->toDateTimeString();
+    $user = Auth::user();
+    $esCobrador = $user->hasRole('Cobrador');
 
-        // Establecer el valor de val_pag_pre a 0 e int_pre a 20 antes de crear el registro
-        $data = $request->all();
-        $data['fec_pre'] = $fechaHoraActual;
-        $data['val_pag_pre'] = 0;
-        $data['int_pre'] = 20;
-
-        $prestamo = Prestamo::create($data);
-
-        return redirect()->route('prestamos.index')
-            ->with('success', '<div class="alert alert-success alert-dismissible">
-                                    <h5><i class="icon fas fa-check"></i> ¡Éxito!</h5>
-                                    Prestamo creado exitosamente.
-                                </div>');
+    if ($esCobrador && $request->cap_pre > 1000000) {
+        $request->merge(['est_pag_pre' => 'Pendiente']);
     }
+
+    $fechaHoraActual = now()->setTimezone('America/Bogota')->toDateTimeString();
+
+    // Establecer el valor de val_pag_pre a 0 e int_pre a 20 antes de crear el registro
+    $data = $request->all();
+    $data['fec_pre'] = $fechaHoraActual;
+    $data['val_pag_pre'] = 0;
+    $data['int_pre'] = 20;
+    $data['dia_mor_pre'] = 0;
+
+    // Asignar el valor de est_pag_pre según la condición
+    if ($esCobrador && $request->cap_pre > 1000000) {
+        $data['est_pag_pre'] = 'Pendiente';
+    } else {
+        $data['est_pag_pre'] = 'Al día';
+    }
+
+    $prestamo = Prestamo::create($data);
+
+    return redirect()->route('prestamos.index')
+        ->with('success', '<div class="alert alert-success alert-dismissible">
+                                <h5><i class="icon fas fa-check"></i> ¡Éxito!</h5>
+                                Préstamo creado exitosamente.
+                            </div>');
+}
 
     /**
      * Display the specified resource.

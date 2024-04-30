@@ -42,17 +42,17 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'barrios.edit', 'description' => 'Editar barrio'])->syncRoles([$role1]);
         Permission::create(['name' => 'barrios.destroy', 'description' => 'Eliminar barrio'])->syncRoles([$role1]);
 
-        Permission::create(['name' => 'prestamos.index', 'description' => 'Ver listado de prestamos'])->syncRoles([$role1]); 
-        Permission::create(['name' => 'prestamos.create', 'description' => 'Registrar nuevo prestamo'])->syncRoles([$role1]); 
-        Permission::create(['name' => 'prestamos.show', 'description' => 'Ver prestamo'])->syncRoles([$role1]);
-        Permission::create(['name' => 'prestamos.edit', 'description' => 'Editar prestamo'])->syncRoles([$role1]);
-        Permission::create(['name' => 'prestamos.destroy', 'description' => 'Eliminar prestamo'])->syncRoles([$role1]);
+        Permission::create(['name' => 'prestamos.index', 'description' => 'Ver listado de prestamos'])->syncRoles([$role1, $role2]); 
+        Permission::create(['name' => 'prestamos.create', 'description' => 'Registrar nuevo prestamo'])->syncRoles([$role1, $role2]); 
+        Permission::create(['name' => 'prestamos.show', 'description' => 'Ver prestamo'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'prestamos.edit', 'description' => 'Editar prestamo'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'prestamos.destroy', 'description' => 'Eliminar prestamo'])->syncRoles([$role1, $role2]);
 
-        Permission::create(['name' => 'cuotas.index', 'description' => 'Ver listado de cuotas'])->syncRoles([$role1]); 
-        Permission::create(['name' => 'cuotas.create', 'description' => 'Registrar nuevo cuota'])->syncRoles([$role1]); 
-        Permission::create(['name' => 'cuotas.show', 'description' => 'Ver cuota'])->syncRoles([$role1]);
-        Permission::create(['name' => 'cuotas.edit', 'description' => 'Editar cuota'])->syncRoles([$role1]);
-        Permission::create(['name' => 'cuotas.destroy', 'description' => 'Eliminar cuota'])->syncRoles([$role1]);
+        Permission::create(['name' => 'cuotas.index', 'description' => 'Ver listado de cuotas'])->syncRoles([$role1, $role2]); 
+        Permission::create(['name' => 'cuotas.create', 'description' => 'Registrar nuevo cuota'])->syncRoles([$role1, $role2]); 
+        Permission::create(['name' => 'cuotas.show', 'description' => 'Ver cuota'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'cuotas.edit', 'description' => 'Editar cuota'])->syncRoles([$role1, $role2]);
+        Permission::create(['name' => 'cuotas.destroy', 'description' => 'Eliminar cuota'])->syncRoles([$role1, $role2]);
 
         Permission::create(['name' => 'cobradores.index', 'description' => 'Ver listado de cobradores'])->syncRoles([$role1]); 
         Permission::create(['name' => 'cobradores.create', 'description' => 'Registrar nuevo cobrador'])->syncRoles([$role1]); 

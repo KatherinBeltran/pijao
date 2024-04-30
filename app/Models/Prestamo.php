@@ -76,14 +76,33 @@ class Prestamo extends Model
     protected static function boot()
     {
         parent::boot();
-    
-        static::created(function ($prestamo) {    
-            // Crear un nuevo registro en la tabla de cuotas
+
+        static::created(function ($prestamo) {
+            // Crear un nuevo registro en la tabla de cuotas si est_pag_pre es "Al día"
+            if ($prestamo->est_pag_pre === 'Al día') {
+                self::crearPrimerCuota($prestamo);
+            }
+        });
+
+        static::updated(function ($prestamo) {
+            // Crear un nuevo registro en la tabla de cuotas si est_pag_pre ha cambiado a "Al día"
+            if ($prestamo->isDirty('est_pag_pre') && $prestamo->est_pag_pre === 'Al día') {
+                self::crearPrimerCuota($prestamo);
+            }
+        });
+    }
+
+    protected static function crearPrimerCuota($prestamo)
+    {
+        // Verificar si ya existe una cuota para este préstamo
+        $existeCuota = $prestamo->cuotas()->exists();
+
+        if (!$existeCuota) {
             $cuota = new Cuota();
             $cuota->pre_cuo = $prestamo->id;
             $cuota->num_cuo = 1;
             $cuota->save();
-        });
-    } 
+        }
+    }
 
 }

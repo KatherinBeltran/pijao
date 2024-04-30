@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property $nom_cob
  * @property $num_ced_cob
  * @property $num_cel_cob
+ * @property $cor_ele_cob
  * @property $dir_cob
  * @property $bar_cob
  * @property $zon_cob
@@ -29,6 +30,7 @@ class Cobradore extends Model
 		'nom_cob' => 'required',
 		'num_ced_cob' => 'required',
 		'num_cel_cob' => 'required',
+		'cor_ele_cob' => 'required',
 		'dir_cob' => 'required',
 		'bar_cob' => 'required',
 		'zon_cob' => 'required',
@@ -41,7 +43,7 @@ class Cobradore extends Model
      *
      * @var array
      */
-    protected $fillable = ['nom_cob','num_ced_cob','num_cel_cob','dir_cob','bar_cob','zon_cob'];
+    protected $fillable = ['nom_cob','num_ced_cob','num_cel_cob','cor_ele_cob','dir_cob','bar_cob','zon_cob'];
 
 
     /**

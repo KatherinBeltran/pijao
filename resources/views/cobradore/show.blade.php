@@ -36,6 +36,10 @@
                             {{ $cobradore->num_cel_cob }}
                         </div>
                         <div class="form-group">
+                            <strong>Correo electrónico:</strong>
+                            {{ $cobradore->cor_ele_cob }}
+                        </div>
+                        <div class="form-group">
                             <strong>Dirección:</strong>
                             {{ $cobradore->dir_cob }}
                         </div>
