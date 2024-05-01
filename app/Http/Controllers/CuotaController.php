@@ -93,9 +93,6 @@ class CuotaController extends Controller
         $prestamos = Prestamo::pluck('id', 'id');
     
         $cuota = new Cuota();
-
-        // Asignar la fecha y hora actual al campo fec_cuo
-        $cuota->fec_cuo = Carbon::now('America/Bogota')->toDateTimeString();
     
         // Verificar si ya hay un valor en pre_cuo
         $prestamo_id = $cuota->pre_cuo ? $cuota->pre_cuo : null;
@@ -164,9 +161,6 @@ class CuotaController extends Controller
     
         $cuota = Cuota::find($id);
     
-        // Asignar la fecha y hora actual al campo fec_cuo
-        $cuota->fec_cuo = Carbon::now('America/Bogota')->toDateTimeString();
-    
         // Verificar si ya hay un valor en pre_cuo
         $prestamo_id = $cuota->pre_cuo ?? null;
     
@@ -186,22 +180,22 @@ class CuotaController extends Controller
     {
         // Validar los datos de entrada
         $request->validate(Cuota::$rules);
-
+    
         // Obtener el préstamo asociado a esta cuota
         $prestamo = Prestamo::findOrFail($request->pre_cuo);
-
+    
         // Verificar si el número de cuotas existentes es igual a cuo_pre
         $cuotas_existentes = Cuota::where('pre_cuo', $request->pre_cuo)->count();
         if ($cuotas_existentes < $prestamo->cuo_pre) {
             // Incrementar el número de cuotas existentes
             $cuotas_existentes++;
-
+    
             // Crear un nuevo registro de cuota con los campos específicos
-            Cuota::create([
+            $nuevaCuota = Cuota::create([
                 'pre_cuo' => $request->pre_cuo,
                 'num_cuo' => $cuotas_existentes,
             ]);
-
+    
             // Actualizar el registro actual con los campos editados que el usuario ha proporcionado
             $cuota->update([
                 'fec_cuo' => $request->fec_cuo,
@@ -210,44 +204,51 @@ class CuotaController extends Controller
                 'sal_cuo' => $request->sal_cuo,
                 'obs_cuo' => $request->obs_cuo,
             ]);
-
+    
+            // Calcular la fecha de vencimiento de la nueva cuota
+            $fechaNuevaCuota = $this->calcularFechaVencimiento(Carbon::parse($request->fec_cuo), $prestamo->pag_pre);
+    
+            // Actualizar la fecha de vencimiento de la nueva cuota
+            $nuevaCuota->fec_cuo = $fechaNuevaCuota;
+            $nuevaCuota->save();
+    
             // Después de realizar la actualización de la cuota, obtenemos el valor de num_cuo
             $num_cuo = $cuota->num_cuo;
-
+    
             // Actualizamos el campo cuo_pag_pre del préstamo asociado
             $prestamo->cuo_pag_pre = $num_cuo;
-
+    
             // Obtener el total abonado
             $tot_abo_cuo = $request->tot_abo_cuo;
-
+    
             // Asignar el total abonado al campo val_pag_pre del préstamo asociado
             $prestamo->val_pag_pre = $tot_abo_cuo;
-
+    
             // Actualizamos el campo sig_cuo_pre del préstamo asociado con el valor de cuotas_existentes
             $prestamo->sig_cuo_pre = $cuotas_existentes;
-
+    
             // Calcular el número de cuotas pendientes
             $cuo_pen_pre = $prestamo->cuo_pre - $prestamo->cuo_pag_pre;
-
+    
             // Actualizar el campo cuo_pen_pre del préstamo asociado con el valor calculado
             $prestamo->cuo_pen_pre = $cuo_pen_pre;
-
+    
             // Calcular el valor de las cuotas pendientes
             $val_cuo_pen_pre = $prestamo->tot_pre - $prestamo->val_pag_pre;
-
+    
             // Actualizar el campo val_cuo_pen_pre del préstamo asociado con el valor calculado
             $prestamo->val_cuo_pen_pre = $val_cuo_pen_pre;
-
+    
             // Guardamos los cambios en el préstamo
             $prestamo->save();
-
+    
             return redirect()->route('cuotas.index')
                 ->with('success', '<div class="alert alert-success alert-dismissible">
                                         <h5><i class="icon fas fa-check"></i> ¡Éxito!</h5>
                                         Cuota actualizada exitosamente.
                                     </div>');
         }
-
+    
         // Si el número de cuotas existentes ya es igual a cuo_pre, solo actualizamos el registro actual
         $cuota->update([
             'pre_cuo' => $request->pre_cuo,
@@ -257,43 +258,59 @@ class CuotaController extends Controller
             'sal_cuo' => $request->sal_cuo,
             'obs_cuo' => $request->obs_cuo,
         ]);
-
+    
         // Después de realizar la actualización de la cuota, obtenemos el valor de num_cuo
         $num_cuo = $cuota->num_cuo;
-
+    
         // Actualizamos el campo cuo_pag_pre del préstamo asociado
         $prestamo->cuo_pag_pre = $num_cuo;
-
+    
         // Obtener el total abonado
         $tot_abo_cuo = $request->tot_abo_cuo;
-
+    
         // Asignar el total abonado al campo val_pag_pre del préstamo asociado
         $prestamo->val_pag_pre = $tot_abo_cuo;
-
+    
         // Actualizamos el campo sig_cuo_pre del préstamo asociado con el valor de cuotas_existentes
         $prestamo->sig_cuo_pre = $cuotas_existentes;
-
+    
         // Calcular el número de cuotas pendientes
         $cuo_pen_pre = $prestamo->cuo_pre - $prestamo->cuo_pag_pre;
-
+    
         // Actualizar el campo cuo_pen_pre del préstamo asociado con el valor calculado
         $prestamo->cuo_pen_pre = $cuo_pen_pre;
-
+    
         // Calcular el valor de las cuotas pendientes
         $val_cuo_pen_pre = $prestamo->tot_pre - $prestamo->val_pag_pre;
-
+    
         // Actualizar el campo val_cuo_pen_pre del préstamo asociado con el valor calculado
         $prestamo->val_cuo_pen_pre = $val_cuo_pen_pre;
-
+    
         // Guardamos los cambios en el préstamo
         $prestamo->save();
-
+    
         return redirect()->route('cuotas.index')
             ->with('success', '<div class="alert alert-success alert-dismissible">
                                     <h5><i class="icon fas fa-check"></i> ¡Éxito!</h5>
                                     Cuota actualizada exitosamente.
                                 </div>');
-    }    
+    }
+    
+    protected function calcularFechaVencimiento($fechaActual, $tipoPago)
+    {
+        switch ($tipoPago) {
+            case 'Diario':
+                return $fechaActual->addDay();
+            case 'Semanal':
+                return $fechaActual->addWeek();
+            case 'Quincenal':
+                return $fechaActual->addWeeks(2);
+            case 'Mensual':
+                return $fechaActual->addMonth();
+            default:
+                return $fechaActual->addDay(); // Valor predeterminado: diario
+        }
+    }  
 
     /**
      * @param int $id

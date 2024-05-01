@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use Carbon\Carbon;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -96,11 +97,31 @@ class Prestamo extends Model
     {
         // Verificar si ya existe una cuota para este préstamo
         $existeCuota = $prestamo->cuotas()->exists();
-
+    
         if (!$existeCuota) {
             $cuota = new Cuota();
             $cuota->pre_cuo = $prestamo->id;
             $cuota->num_cuo = 1;
+    
+            // Establecer la fecha de la primera cuota según el tipo de pago
+            $fechaActual = Carbon::now('America/Bogota');
+            switch ($prestamo->pag_pre) {
+                case 'Diario':
+                    $cuota->fec_cuo = $fechaActual->addDay();
+                    break;
+                case 'Semanal':
+                    $cuota->fec_cuo = $fechaActual->addWeek();
+                    break;
+                case 'Quincenal':
+                    $cuota->fec_cuo = $fechaActual->addWeeks(2);
+                    break;
+                case 'Mensual':
+                    $cuota->fec_cuo = $fechaActual->addMonth();
+                    break;
+                default:
+                    $cuota->fec_cuo = $fechaActual->addDay(); // Valor predeterminado: diario
+            }
+    
             $cuota->save();
         }
     }

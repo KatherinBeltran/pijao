@@ -8,7 +8,7 @@
         </div>
         <div class="form-group">
             {{ Form::label('Fecha') }}
-            <input type="text" id="fec_cuo" name="fec_cuo" class="form-control{{ $errors->has('fec_cuo') ? ' is-invalid' : '' }}" value="{{ $cuota->fec_cuo }}" readonly>
+            <input type="datetime-local" id="fec_cuo" name="fec_cuo" class="form-control{{ $errors->has('fec_cuo') ? ' is-invalid' : '' }}" value="{{ $cuota->fec_cuo }}">
             {!! $errors->first('fec_cuo', '<div class="invalid-feedback">:message</div>') !!}
         </div>
         <div class="form-group">
