@@ -34,11 +34,6 @@
                 {!! $errors->first('fec_pre', '<div class="invalid-feedback">:message</div>') !!}
             </div>
             <div class="form-group">
-                {{ Form::label('Fecha pago anticipado') }}
-                <input type="datetime-local" name="fec_pag_ant_pre" class="form-control{{ $errors->has('fec_pag_ant_pre') ? ' is-invalid' : '' }}" value="{{ $prestamo->fec_pag_ant_pre }}" placeholder="Fecha pago anticipado">
-                {!! $errors->first('fec_pag_ant_pre', '<div class="invalid-feedback">:message</div>') !!}
-            </div>
-            <div class="form-group">
                 {{ Form::label('Cobros y/o pagos') }}
                 {{ Form::select('pag_pre', ['Diario' => 'Diario', 'Semanal' => 'Semanal', 'Quincenal' => 'Quincenal', 'Mensual' => 'Mensual'], $prestamo->pag_pre, ['id' => 'pag_pre', 'class' => 'form-control' . ($errors->has('pag_pre') ? ' is-invalid' : ''), 'placeholder' => 'Seleccione una opción', 'onchange' => 'calcularCuotaPredeterminada(); calcularCuota()']) }}
                 {!! $errors->first('pag_pre', '<div class="invalid-feedback">:message</div>') !!}

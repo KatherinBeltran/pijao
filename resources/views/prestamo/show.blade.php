@@ -49,10 +49,6 @@
                                     {{ $prestamo->fec_pre }}
                                 </div>
                                 <div class="form-group">
-                                    <strong>Fecha pago anticipado:</strong>
-                                    {{ $prestamo->fec_pag_ant_pre }}
-                                </div>
-                                <div class="form-group">
                                     <strong>Cobros y/o pagos:</strong>
                                     {{ $prestamo->pag_pre }}
                                 </div>

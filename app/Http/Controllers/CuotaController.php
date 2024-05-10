@@ -29,58 +29,56 @@ class CuotaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        $user = Auth::user();
-    
-        if (!$user) {
-            return "No estás autenticado.";
-        }
-    
-        $cobradoreEmail = $user->email;
-    
-        // Verificar si el correo del usuario coincide con el correo en la tabla de cobradores
-        $cobradore = DB::table('cobradores')->where('cor_ele_cob', $cobradoreEmail)->first();
-    
-        if ($cobradore) {
-            // El usuario es un cobrador, obtener las cuotas asociadas a su zona
-            $cuotas = Cuota::select('cuotas.*')
-                ->join(DB::raw('(SELECT MAX(id) AS id FROM cuotas GROUP BY pre_cuo) AS sub'), function ($join) {
-                    $join->on('cuotas.id', '=', 'sub.id');
-                })
-                ->join('prestamos', 'cuotas.pre_cuo', '=', 'prestamos.id')
-                ->join('barrios', 'prestamos.bar_cli_pre', '=', 'barrios.id')
-                ->where('barrios.zon_bar', $cobradore->zon_cob)
-                ->paginate(10000);
-    
-            $prestamos = Prestamo::all();
-    
-            return view('cuota.index', compact('cuotas', 'prestamos'))
-                ->with('i', (request()->input('page', 1) - 1) * $cuotas->perPage());
-        } else {
-            // El usuario no es un cobrador, mostrar todas las cuotas
-            $cuotas = Cuota::select('cuotas.*')
-                ->join(DB::raw('(SELECT MAX(id) AS id FROM cuotas GROUP BY pre_cuo) AS sub'), function ($join) {
-                    $join->on('cuotas.id', '=', 'sub.id');
-                })
-                /*->whereNotExists(function ($query) {
-                $query->selectRaw('1')
-                    ->from('prestamos')
-                    ->whereRaw('prestamos.cuo_pre = cuotas.num_cuo')
-                    ->whereRaw('cuotas.pre_cuo IS NOT NULL')
-                    ->whereRaw('cuotas.fec_cuo IS NOT NULL')
-                    ->whereRaw('cuotas.val_cuo IS NOT NULL')
-                    ->whereRaw('cuotas.tot_abo_cuo IS NOT NULL')
-                    ->whereRaw('cuotas.sal_cuo IS NOT NULL')
-                    ->whereRaw('cuotas.num_cuo IS NOT NULL');
-                })*/
-                ->paginate(10000);
-    
-            $prestamos = Prestamo::all();
-    
-            return view('cuota.index', compact('cuotas', 'prestamos'))
-                ->with('i', (request()->input('page', 1) - 1) * $cuotas->perPage());
-        }
-    } 
+{
+    $user = Auth::user();
+    if (!$user) {
+        return "No estás autenticado.";
+    }
+
+    $cobradoreEmail = $user->email;
+    $cobrador = DB::table('cobradores')->where('cor_ele_cob', $cobradoreEmail)->first();
+
+    if ($cobrador) {
+        // El usuario es un cobrador, obtener las cuotas asociadas a su zona
+        $cuotas = Cuota::select('cuotas.*')
+            ->join(DB::raw('(SELECT MAX(id) AS id FROM cuotas GROUP BY pre_cuo) AS sub'), function ($join) {
+                $join->on('cuotas.id', '=', 'sub.id');
+            })
+            ->join('prestamos', 'cuotas.pre_cuo', '=', 'prestamos.id')
+            ->join('barrios', 'prestamos.bar_cli_pre', '=', 'barrios.id')
+            ->where('barrios.zon_bar', $cobrador->zon_cob)
+            ->where(function ($query) {
+                $query->whereExists(function ($query) {
+                    $query->selectRaw('1')
+                        ->from('prestamos')
+                        ->whereRaw('prestamos.cuo_pre < cuotas.num_cuo')
+                        ->orWhereRaw('cuotas.sal_cuo <> 0')
+                        ->orWhereRaw('cuotas.pre_cuo IS NULL')
+                        ->orWhereRaw('cuotas.fec_cuo IS NULL')
+                        ->orWhereRaw('cuotas.val_cuo IS NULL')
+                        ->orWhereRaw('cuotas.tot_abo_cuo IS NULL')
+                        ->orWhereRaw('cuotas.sal_cuo IS NULL')
+                        ->orWhereRaw('cuotas.num_cuo IS NULL');
+                });
+            })
+            ->paginate(10000);
+
+        $prestamos = Prestamo::all();
+        return view('cuota.index', compact('cuotas', 'prestamos'))
+            ->with('i', (request()->input('page', 1) - 1) * $cuotas->perPage());
+    } else {
+        // El usuario no es un cobrador, mostrar todas las cuotas
+        $cuotas = Cuota::select('cuotas.*')
+            ->join(DB::raw('(SELECT MAX(id) AS id FROM cuotas GROUP BY pre_cuo) AS sub'), function ($join) {
+                $join->on('cuotas.id', '=', 'sub.id');
+            })
+            ->paginate(10000);
+
+        $prestamos = Prestamo::all();
+        return view('cuota.index', compact('cuotas', 'prestamos'))
+            ->with('i', (request()->input('page', 1) - 1) * $cuotas->perPage());
+    }
+}
 
     /**
      * Show the form for creating a new resource.

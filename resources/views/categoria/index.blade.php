@@ -3,10 +3,10 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <h1>Manejo de cuotas</h1>
+    <h1>Lista de categorias</h1>
 
     <div class="float-right">
-        <a href="{{ route('cuotas.create') }}" class="btn btn-block btn-outline-success btn-sm float-right" data-placement="left">
+        <a href="{{ route('categorias.create') }}" class="btn btn-block btn-outline-success btn-sm float-right" data-placement="left">
             {{ __('Nuevo') }}
         </a>
     </div>
@@ -27,33 +27,22 @@
     <table id="example" class="table table-striped table-bordered" style="width:100%">
         <thead class="thead">
             <tr>
-                <th>Código prestamo</th>
-                <th>Fecha</th>
-                <th>Valor</th>
-                <th>Total abonado</th>
-                <th>Saldo</th>
-                <th>Número</th>
-                <th>Observación</th>
+                <th>Código</th>
+                <th>Nombre</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($cuotas as $cuota)
-                @php
-                    $prestamo = $prestamos->where('cuo_pre', $cuota->num_cuo)->first();
-                @endphp
-                <tr class="@if ($prestamo && $cuota->num_cuo == $prestamo->cuo_pre && !is_null($cuota->pre_cuo) && !is_null($cuota->fec_cuo) && !is_null($cuota->val_cuo) && !is_null($cuota->tot_abo_cuo) && !is_null($cuota->sal_cuo) && !is_null($cuota->num_cuo) && ($cuota->num_cuo > $prestamo->cuo_pag_pre || $cuota->sal_cuo == 0)) row-green @endif">
-                    <td>{{ $cuota->pre_cuo }}</td>
-                    <td>{{ $cuota->fec_cuo }}</td>
-                    <td>{{ $cuota->val_cuo }}</td>
-                    <td>{{ $cuota->tot_abo_cuo }}</td>
-                    <td>{{ $cuota->sal_cuo }}</td>
-                    <td>{{ $cuota->num_cuo }}</td>
-                    <td>{{ $cuota->obs_cuo }}</td>
+            @foreach ($categorias as $categoria)
+                <tr>
+                    <td>{{ ++$i }}</td>
+                    
+                    <td>{{ $categoria->nom_cat }}</td>
+                    
                     <td>
-                        <form action="{{ route('cuotas.destroy',$cuota->id) }}" method="POST">
-                            <a class="btn btn-sm btn-info" href="{{ route('cuotas.show',$cuota->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('') }}</a>
-                            <a class="btn btn-sm btn-warning" href="{{ route('cuotas.edit',$cuota->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('') }}</a>
+                        <form action="{{ route('categorias.destroy',$categoria->id) }}" method="POST">
+                            <a class="btn btn-sm btn-info" href="{{ route('categorias.show',$categoria->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('') }}</a>
+                            <a class="btn btn-sm btn-warning" href="{{ route('categorias.edit',$categoria->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('') }}</a>
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> {{ __('') }}</button>

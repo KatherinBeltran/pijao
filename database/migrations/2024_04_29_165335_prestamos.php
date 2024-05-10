@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('dir_cli_pre', 45); // direccion cliente prestamo
             $table->unsignedInteger('bar_cli_pre'); // barrio cliente prestamo
             $table->datetime('fec_pre')->nullable(); // fecha prestamo
-            $table->datetime('fec_pag_ant_pre')->nullable(); // fecha pago anticipado prestamo
             $table->string('pag_pre', 10)->nullable(); // cobros y/o pagos prestamo
             $table->integer('cuo_pre')->nullable(); // cuotas prestamo
             $table->integer('cap_pre')->nullable(); // capital prestamo

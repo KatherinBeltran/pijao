@@ -34,7 +34,6 @@
             <th>Dirección</th>
             <th>Barrio</th>
             <th>Fecha</th>
-            <th>Fecha pago anticipado</th>
             <th>Cobros y/o pagos</th>
             <th>Cuotas</th>
             <th>Capital</th>
@@ -62,7 +61,6 @@
                 <td>{{ $prestamo->dir_cli_pre }}</td>
                 <td>{{ $prestamo->barrio->nom_bar }}</td>
                 <td>{{ $prestamo->fec_pre }}</td>
-                <td>{{ $prestamo->fec_pag_ant_pre }}</td>
                 <td>{{ $prestamo->pag_pre }}</td>
                 <td>{{ $prestamo->cuo_pre }}</td>
                 <td>{{ $prestamo->cap_pre }}</td>

@@ -332,16 +332,42 @@ return [
             ],
         ],
         [
-            'text'    => 'Zonas',
-            'url'  => 'zonas',
-            'icon'    => 'fa fa-map fa-2x',
-            'can' => ['zonas.index'],
+            'text'    => 'Zonificación de préstamos',
+            'icon'    => 'fa fa-map-signs fa-2x',
+            'can' => ['zonas.index', 'barrios.index'],
+            'submenu' => [
+                [
+                    'text'    => 'Zonas',
+                    'url'  => 'zonas',
+                    'icon'    => 'fa fa-map fa-lg',
+                    'can' => ['zonas.index'],
+                ],
+                [
+                    'text'    => 'Barrios',
+                    'url'  => 'barrios',
+                    'icon'    => 'fa fa-home fa-lg',
+                    'can' => ['barrios.index'],
+                ],
+            ],
         ],
         [
-            'text'    => 'Barrios',
-            'url'  => 'barrios',
-            'icon'    => 'fa fa-home fa-2x',
-            'can' => ['barrios.index'],
+            'text'    => 'Gestión de gastos',
+            'icon'    => 'fa fa-usd fa-2x',
+            'can' => ['categorias.index', 'gastos.index'],
+            'submenu' => [
+                [
+                    'text'    => 'Categorias de gastos',
+                    'url'  => 'categorias',
+                    'icon'    => 'fas fa-fw fa-server fa-lg',
+                    'can' => ['categorias.index'],
+                ],
+                [
+                    'text'    => 'Gastos',
+                    'url'  => 'gastos',
+                    'icon'    => 'fa fa-credit-card fa-lg',
+                    'can' => ['gastos.index'],
+                ],
+            ],
         ],
         [
             'text'    => 'Cobradores',

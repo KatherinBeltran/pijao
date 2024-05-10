@@ -6,6 +6,7 @@ use App\Models\Prestamo;
 use Illuminate\Http\Request;
 use App\Models\Barrio;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -29,10 +30,29 @@ class PrestamoController extends Controller
      */
     public function index()
     {
-        $prestamos = Prestamo::paginate(10000);
-
-        return view('prestamo.index', compact('prestamos'))
-            ->with('i', (request()->input('page', 1) - 1) * $prestamos->perPage());
+        $user = Auth::user();
+        if (!$user) {
+            return "No estás autenticado.";
+        }
+        
+        $cobradoreEmail = $user->email;
+        $cobrador = DB::table('cobradores')->where('cor_ele_cob', $cobradoreEmail)->first();
+        
+        if ($cobrador) {
+            $zonaCobradorId = $cobrador->zon_cob;
+            // Obtener los préstamos asociados a la zona del cobrador
+            $prestamos = Prestamo::whereHas('barrio.zona', function ($query) use ($zonaCobradorId) {
+                $query->where('id', $zonaCobradorId);
+            })->paginate(10000);
+        
+            return view('prestamo.index', compact('prestamos'))
+                ->with('i', (request()->input('page', 1) - 1) * $prestamos->perPage());
+        } else {
+            // El usuario no es un cobrador, mostrar todos los préstamos
+            $prestamos = Prestamo::paginate(10000);
+            return view('prestamo.index', compact('prestamos'))
+                ->with('i', (request()->input('page', 1) - 1) * $prestamos->perPage());
+        }
     }
 
     /**

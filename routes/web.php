@@ -22,6 +22,8 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Auth::routes();
 
+Route::resource('gastos', App\Http\Controllers\GastoController::class);
+Route::resource('categorias', App\Http\Controllers\CategoriaController::class);
 Route::resource('cobradores', App\Http\Controllers\CobradoreController::class);
 Route::resource('cuotas', App\Http\Controllers\CuotaController::class);
 Route::resource('prestamos', App\Http\Controllers\PrestamoController::class);
