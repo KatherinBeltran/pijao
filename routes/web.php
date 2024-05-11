@@ -22,6 +22,8 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Auth::routes();
 
+Route::get('/reportes/pdf', [App\Http\Controllers\ReporteController::class, 'generarPDF'])->name('reportes.pdf');
+Route::resource('reportes', App\Http\Controllers\ReporteController::class);
 Route::resource('gastos', App\Http\Controllers\GastoController::class);
 Route::resource('categorias', App\Http\Controllers\CategoriaController::class);
 Route::resource('cobradores', App\Http\Controllers\CobradoreController::class);

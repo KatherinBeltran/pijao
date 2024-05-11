@@ -387,6 +387,12 @@ return [
             'icon'    => 'fa fa-cubes fa-2x',
             'can' => ['cuotas.index'],
         ],
+        [
+            'text'    => 'Reporte económico',
+            'url'  => 'reportes',
+            'icon'    => 'fa fa-file-pdf fa-2x',
+            'can' => ['reportes.index'],
+        ],
     ],
 
     /*

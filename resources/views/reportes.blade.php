@@ -1,0 +1,126 @@
+@extends('adminlte::page')
+
+@section('title', 'Reportes')
+
+@section('content_header')
+    <h1>Reporte Económico</h1>
+@stop
+
+@section('content')
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <form action="{{ route('reportes.index') }}" method="GET">
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label for="fecha_inicio">Fecha de Inicio</label>
+                                <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" value="{{ $fechaInicio }}">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="fecha_fin">Fecha de Fin</label>
+                                <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" value="{{ $fechaFin }}">
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-primary btn-block">Filtrar</button>
+                            </div>
+                        </div>
+                    </form>
+                    <h3>Resumen de Gastos</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Categoría</th>
+                                <th>Suma de Montos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($reporte as $item)
+                                <tr>
+                                    <td>{{ $item->nom_cat }}</td>
+                                    <td>{{ $item->suma_montos }}</td>
+                                </tr>
+                            @endforeach
+                            <tr>
+                                <td><strong>Total</strong></td>
+                                <td><strong>{{ $reporte->sum('suma_montos') }}</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    <h3>Análisis de Préstamo</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Descripción</th>
+                                <th>Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Capital Prestado</td>
+                                <td>{{ $capitalPrestado }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total Recolectado</td>
+                                <td>{{ $totalRecolectado }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total Dinero prestado con intereses</td>
+                                <td>{{ $totalDineroPrestadoConIntereses }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total Utilidad</td>
+                                <td>{{ $totalUtilidad }}</td>
+                            </tr>
+                            <tr>
+                                <td>Utilidad Neta con gastos</td>
+                                <td>{{ $utilidadNetaConGastos }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    <form action="{{ route('reportes.pdf') }}" method="GET" target="_blank" style="float: right;">
+                        <input type="hidden" name="fecha_inicio" value="{{ $fechaInicio }}">
+                        <input type="hidden" name="fecha_fin" value="{{ $fechaFin }}">
+                        <button type="submit" class="btn btn-danger">PDF</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@stop
+
+@section('css')
+    <link rel="stylesheet" href="/css/admin_custom.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap4.min.css">
+
+    <style>
+    #example_wrapper .paginate_button.page-item.active > a.page-link {
+    background-color: lightgray !important;
+    color: black !important;
+    border-color: gray !important;
+    }
+    </style>
+@stop
+
+@section('js')
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap4.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#example').DataTable({
+                responsive: true,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.11.3/i18n/es_es.json" // Carga el archivo de idioma en español
+                }
+            });
+        });
+    </script>
+@stop

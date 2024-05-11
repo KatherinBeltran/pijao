@@ -71,5 +71,7 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'gastos.show', 'description' => 'Ver gasto'])->syncRoles([$role1]);
         Permission::create(['name' => 'gastos.edit', 'description' => 'Editar gasto'])->syncRoles([$role1]);
         Permission::create(['name' => 'gastos.destroy', 'description' => 'Eliminar gasto'])->syncRoles([$role1]);
+
+        Permission::create(['name' => 'reportes.index', 'description' => 'Generar reporte económico'])->syncRoles([$role1]);
     }
 }
