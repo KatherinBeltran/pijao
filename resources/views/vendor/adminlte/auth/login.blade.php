@@ -18,6 +18,15 @@
     @php( $password_reset_url = $password_reset_url ? url($password_reset_url) : '' )
 @endif
 
+<style>
+    body {
+        background-image: url('{{ asset('vendor/adminlte/dist/img/Money.jpg') }}');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+</style>
+
 @section('auth_header', __('Iniciar sesión'))
 
 @section('auth_body')

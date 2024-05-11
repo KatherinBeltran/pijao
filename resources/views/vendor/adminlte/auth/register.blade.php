@@ -11,6 +11,15 @@
     @php( $register_url = $register_url ? url($register_url) : '' )
 @endif
 
+<style>
+    body {
+        background-image: url('{{ asset('vendor/adminlte/dist/img/Money.jpg') }}');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+</style>
+
 @section('auth_header', __('Registrar una nueva membresia'))
 
 @section('auth_body')
