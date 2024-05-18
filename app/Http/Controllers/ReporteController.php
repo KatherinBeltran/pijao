@@ -9,6 +9,8 @@ use App\Models\Prestamo;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Support\Facades\Response;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ReporteExport;
 
 class ReporteController extends Controller
 {
@@ -103,4 +105,34 @@ class ReporteController extends Controller
         ]);
     }
 
+    public function generarExcel(Request $request)
+    {
+        $fechaInicio = $request->input('fecha_inicio');
+        $fechaFin = $request->input('fecha_fin');
+
+        // Obtener el reporte de gastos
+        $reporte = Categoria::select('nom_cat', DB::raw('SUM(g.mon_gas) as suma_montos'))
+            ->leftJoin('gastos as g', 'categorias.id', '=', 'g.cat_gas')
+            ->when($fechaInicio, function ($query) use ($fechaInicio, $fechaFin) {
+                $query->whereBetween('g.fec_gas', [$fechaInicio, $fechaFin]);
+            })
+            ->groupBy('categorias.id', 'nom_cat')
+            ->get();
+
+        // Obtener los préstamos
+        $prestamos = Prestamo::when($fechaInicio, function ($query) use ($fechaInicio, $fechaFin) {
+            $query->whereBetween('fec_pre', [$fechaInicio, $fechaFin]);
+        })
+        ->get();
+
+        // Calcular los valores para la segunda tabla
+        $capitalPrestado = $prestamos->sum('cap_pre');
+        $totalRecolectado = $prestamos->sum('val_pag_pre');
+        $totalDineroPrestadoConIntereses = $prestamos->sum('tot_pre');
+        $totalUtilidad = $totalDineroPrestadoConIntereses - $capitalPrestado;
+        $utilidadNetaConGastos = $totalUtilidad - $reporte->sum('suma_montos');
+
+        // Exportar a Excel
+        return Excel::download(new ReporteExport($reporte, $fechaInicio, $fechaFin, $capitalPrestado, $totalRecolectado, $totalDineroPrestadoConIntereses, $totalUtilidad, $utilidadNetaConGastos), 'reporte.xlsx');
+    }
 }

@@ -22,6 +22,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Auth::routes();
 
+Route::get('reportes/excel', [App\Http\Controllers\ReporteController::class, 'generarExcel'])->name('reportes.excel');
 Route::get('/reportes/pdf', [App\Http\Controllers\ReporteController::class, 'generarPDF'])->name('reportes.pdf');
 Route::resource('reportes', App\Http\Controllers\ReporteController::class);
 Route::resource('gastos', App\Http\Controllers\GastoController::class);

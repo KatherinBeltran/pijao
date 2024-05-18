@@ -81,10 +81,15 @@
                         </tbody>
                     </table>
                     <br>
-                    <form action="{{ route('reportes.pdf') }}" method="GET" target="_blank" style="float: right;">
+                    <form action="{{ route('reportes.pdf') }}" method="GET" target="_blank" style="float: right; margin-right: 10px;">
                         <input type="hidden" name="fecha_inicio" value="{{ $fechaInicio }}">
                         <input type="hidden" name="fecha_fin" value="{{ $fechaFin }}">
                         <button type="submit" class="btn btn-danger">PDF</button>
+                    </form>
+                    <form action="{{ route('reportes.excel') }}" method="GET" target="_blank" style="float: right; margin-right: 10px;">
+                        <input type="hidden" name="fecha_inicio" value="{{ $fechaInicio }}">
+                        <input type="hidden" name="fecha_fin" value="{{ $fechaFin }}">
+                        <button type="submit" class="btn btn-success">Excel</button>
                     </form>
                 </div>
             </div>
