@@ -29,56 +29,96 @@ class CuotaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-{
-    $user = Auth::user();
-    if (!$user) {
-        return "No estás autenticado.";
-    }
-
-    $cobradoreEmail = $user->email;
-    $cobrador = DB::table('cobradores')->where('cor_ele_cob', $cobradoreEmail)->first();
-
-    if ($cobrador) {
-        // El usuario es un cobrador, obtener las cuotas asociadas a su zona
-        $cuotas = Cuota::select('cuotas.*')
-            ->join(DB::raw('(SELECT MAX(id) AS id FROM cuotas GROUP BY pre_cuo) AS sub'), function ($join) {
-                $join->on('cuotas.id', '=', 'sub.id');
-            })
-            ->join('prestamos', 'cuotas.pre_cuo', '=', 'prestamos.id')
-            ->join('barrios', 'prestamos.bar_cli_pre', '=', 'barrios.id')
-            ->where('barrios.zon_bar', $cobrador->zon_cob)
-            ->where(function ($query) {
-                $query->whereExists(function ($query) {
-                    $query->selectRaw('1')
-                        ->from('prestamos')
-                        ->whereRaw('prestamos.cuo_pre < cuotas.num_cuo')
-                        ->orWhereRaw('cuotas.sal_cuo <> 0')
-                        ->orWhereRaw('cuotas.pre_cuo IS NULL')
-                        ->orWhereRaw('cuotas.fec_cuo IS NULL')
-                        ->orWhereRaw('cuotas.val_cuo IS NULL')
-                        ->orWhereRaw('cuotas.tot_abo_cuo IS NULL')
-                        ->orWhereRaw('cuotas.sal_cuo IS NULL')
-                        ->orWhereRaw('cuotas.num_cuo IS NULL');
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return "No estás autenticado.";
+        }
+    
+        $cobradoreEmail = $user->email;
+        $cobrador = DB::table('cobradores')->where('cor_ele_cob', $cobradoreEmail)->first();
+    
+        if ($cobrador) {
+            // El usuario es un cobrador, obtener las cuotas asociadas a su zona
+            $cuotasQuery = Cuota::select('cuotas.*')
+                ->join(DB::raw('(SELECT MAX(id) AS id FROM cuotas GROUP BY pre_cuo) AS sub'), function ($join) {
+                    $join->on('cuotas.id', '=', 'sub.id');
+                })
+                ->join('prestamos', 'cuotas.pre_cuo', '=', 'prestamos.id')
+                ->join('barrios', 'prestamos.bar_cli_pre', '=', 'barrios.id')
+                ->where('barrios.zon_bar', $cobrador->zon_cob)
+                ->where(function ($query) {
+                    $query->whereExists(function ($query) {
+                        $query->selectRaw('1')
+                            ->from('prestamos')
+                            ->whereRaw('prestamos.cuo_pre < cuotas.num_cuo')
+                            ->orWhereRaw('cuotas.sal_cuo <> 0')
+                            ->orWhereRaw('cuotas.pre_cuo IS NULL')
+                            ->orWhereRaw('cuotas.fec_cuo IS NULL')
+                            ->orWhereRaw('cuotas.val_cuo IS NULL')
+                            ->orWhereRaw('cuotas.tot_abo_cuo IS NULL')
+                            ->orWhereRaw('cuotas.sal_cuo IS NULL')
+                            ->orWhereRaw('cuotas.num_cuo IS NULL');
+                    });
                 });
-            })
-            ->paginate(10000);
-
-        $prestamos = Prestamo::all();
-        return view('cuota.index', compact('cuotas', 'prestamos'))
-            ->with('i', (request()->input('page', 1) - 1) * $cuotas->perPage());
-    } else {
-        // El usuario no es un cobrador, mostrar todas las cuotas
-        $cuotas = Cuota::select('cuotas.*')
-            ->join(DB::raw('(SELECT MAX(id) AS id FROM cuotas GROUP BY pre_cuo) AS sub'), function ($join) {
-                $join->on('cuotas.id', '=', 'sub.id');
-            })
-            ->paginate(10000);
-
-        $prestamos = Prestamo::all();
-        return view('cuota.index', compact('cuotas', 'prestamos'))
-            ->with('i', (request()->input('page', 1) - 1) * $cuotas->perPage());
+    
+            $cuotas = $cuotasQuery->paginate(10000);
+    
+            $this->actualizarEstadoPrestamosYDiasMora($cuotas);
+    
+            $prestamos = Prestamo::all();
+            return view('cuota.index', compact('cuotas', 'prestamos'))
+                ->with('i', (request()->input('page', 1) - 1) * $cuotas->perPage());
+        } else {
+            // El usuario no es un cobrador, mostrar todas las cuotas
+            $cuotasQuery = Cuota::select('cuotas.*')
+                ->join(DB::raw('(SELECT MAX(id) AS id FROM cuotas GROUP BY pre_cuo) AS sub'), function ($join) {
+                    $join->on('cuotas.id', '=', 'sub.id');
+                });
+    
+            $cuotas = $cuotasQuery->paginate(10000);
+    
+            $this->actualizarEstadoPrestamosYDiasMora($cuotas);
+    
+            $prestamos = Prestamo::all();
+            return view('cuota.index', compact('cuotas', 'prestamos'))
+                ->with('i', (request()->input('page', 1) - 1) * $cuotas->perPage());
+        }
     }
-}
+
+    private function actualizarEstadoPrestamosYDiasMora($cuotas)
+    {
+        foreach ($cuotas as $cuota) {
+            if (is_null($cuota->pre_cuo) || is_null($cuota->fec_cuo) || is_null($cuota->val_cuo) || is_null($cuota->tot_abo_cuo) || is_null($cuota->sal_cuo) || is_null($cuota->num_cuo)) {
+                $prestamo = Prestamo::findOrFail($cuota->pre_cuo);
+                $fechaCuota = Carbon::parse($cuota->fec_cuo);
+                $fechaActual = Carbon::now();
+
+                if ($fechaCuota->gt($fechaActual)) {
+                    // La fecha de la cuota es mayor que la fecha actual
+                    $prestamo->est_pag_pre = 'Al día';
+                    $prestamo->dia_mor_pre = 0;
+                } else {
+                    // La fecha de la cuota es menor o igual que la fecha actual
+                    $prestamo->est_pag_pre = 'En mora';
+                    $diasMora = $fechaActual->diffInDays($fechaCuota);
+                    $prestamo->dia_mor_pre = $diasMora;
+                }
+
+                $prestamo->save();
+            } else {
+                // Agregar la nueva condición aquí
+                if (!is_null($cuota->pre_cuo) && !is_null($cuota->fec_cuo) && !is_null($cuota->val_cuo) && !is_null($cuota->tot_abo_cuo) && !is_null($cuota->sal_cuo) && !is_null($cuota->num_cuo)) {
+                    if ($prestamo = Prestamo::findOrFail($cuota->pre_cuo)) {
+                        $prestamo->est_pag_pre = 'Al día';
+                        $prestamo->dia_mor_pre = 0;
+    
+                        $prestamo->save();
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Show the form for creating a new resource.
