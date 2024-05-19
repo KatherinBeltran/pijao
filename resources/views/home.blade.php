@@ -16,6 +16,59 @@
                 Hay prestamos pendientes por aprobación en la tabla de prestamos.
             </div>
         @endif
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>{{ $cobradorCount }}</h3>
+                        <p>Cobradores</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-motorcycle"></i>
+                    </div>
+                    <a href="cobradores" class="small-box-footer">Más info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div><br>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>{{ $prestamoCount }}</h3>
+                        <p>Prestamos</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-handshake"></i>
+                    </div>
+                    <a href="prestamos" class="small-box-footer">Más info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div><br>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>{{ $cuotasActivas }}</h3>
+                        <p>Cuotas activas</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-cubes"></i>
+                    </div>
+                    <a href="cuotas" class="small-box-footer">Más info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div><br>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>{{ $gastoCount }}</h3>
+                        <p>Gastos</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-credit-card"></i>
+                    </div>
+                    <a href="gastos" class="small-box-footer">Más info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div><br>
+        </div>
         <section class="col-lg-6 connectedSortable ui-sortable">
             <div class="card">
                 <div class="card-header">

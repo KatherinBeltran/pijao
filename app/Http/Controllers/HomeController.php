@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Prestamo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Models\Cobradore;
+use App\Models\Gasto;
 
 class HomeController extends Controller
 {
@@ -25,18 +27,44 @@ class HomeController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index()
-    {
-        // Verificar si el usuario autenticado es un administrador
-        $esAdmin = auth()->user()->hasRole('Administrador');
+{
+    // Verificar si el usuario autenticado es un administrador
+    $esAdmin = auth()->user()->hasRole('Administrador');
 
-        // Tu lógica para obtener los datos de la tabla de prestamos
-        $prestamos = Prestamo::all();
-    
-        // Verifica si hay prestamos pendientes
-        $prestamosPendientes = $prestamos->contains('est_pag_pre', 'Pendiente');
+    // Tu lógica para obtener los datos de la tabla de cobradores
+    $cobradores = Cobradore::all();
 
-        // Obtener los datos para el gráfico
-        $prestamosPorMes = DB::table('prestamos')
+    // Obtener el conteo de registros de la tabla cobradores
+    $cobradorCount = $cobradores->count();
+
+    // Tu lógica para obtener los datos de la tabla de prestamos
+    $prestamos = Prestamo::all();
+
+    // Obtener el conteo de registros de la tabla prestamos
+    $prestamoCount = $prestamos->count();
+
+    // Obtener el conteo de cuotas que cumplen con la condición
+    $cuotasActivas = 0;
+    foreach ($prestamos as $prestamo) {
+        $cuotas = $prestamo->cuotas;
+        foreach ($cuotas as $cuota) {
+            if (is_null($cuota->pre_cuo) || is_null($cuota->fec_cuo) || is_null($cuota->val_cuo) || is_null($cuota->tot_abo_cuo) || is_null($cuota->sal_cuo) || is_null($cuota->num_cuo)) {
+                $cuotasActivas++;
+            }
+        }
+    }
+
+    // Tu lógica para obtener los datos de la tabla de gastos
+    $gastos = Gasto::all();
+
+    // Obtener el conteo de registros de la tabla gastos
+    $gastoCount = $gastos->count();
+
+    // Verifica si hay prestamos pendientes
+    $prestamosPendientes = $prestamos->contains('est_pag_pre', 'Pendiente');
+
+    // Obtener los datos para el gráfico
+    $prestamosPorMes = DB::table('prestamos')
         ->select(
             DB::raw('MONTH(fec_pre) as mes'),
             DB::raw('YEAR(fec_pre) as anio'),
@@ -47,19 +75,23 @@ class HomeController extends Controller
         ->orderBy('mes', 'asc')
         ->get();
 
-        $datos = array();
-        foreach ($prestamosPorMes as $prestamo) {
-            $mes = Carbon::createFromDate(null, $prestamo->mes, null)->isoFormat('MMMM');
-            $datos[] = array(
-                'mes' => $mes . ' ' . $prestamo->anio,
-                'total' => $prestamo->total
-            );
-        }
-
-        return view('home', [
-            'prestamosPendientes' => $prestamosPendientes,
-            'esAdmin' => $esAdmin,
-            'datos' => $datos,
-        ]);
+    $datos = array();
+    foreach ($prestamosPorMes as $prestamo) {
+        $mes = Carbon::createFromDate(null, $prestamo->mes, null)->isoFormat('MMMM');
+        $datos[] = array(
+            'mes' => $mes . ' ' . $prestamo->anio,
+            'total' => $prestamo->total
+        );
     }
+
+    return view('home', [
+        'prestamosPendientes' => $prestamosPendientes,
+        'esAdmin' => $esAdmin,
+        'datos' => $datos,
+        'cobradorCount' => $cobradorCount,
+        'prestamoCount' => $prestamoCount,
+        'gastoCount' => $gastoCount,
+        'cuotasActivas' => $cuotasActivas,
+    ]);
+}
 }
