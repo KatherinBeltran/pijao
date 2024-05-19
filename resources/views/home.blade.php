@@ -69,16 +69,28 @@
                 </div>
             </div><br>
         </div>
-        <section class="col-lg-6 connectedSortable ui-sortable">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Montos prestados</h3>
+        <div class="row">
+            <section class="col-lg-6 connectedSortable ui-sortable">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Montos prestados</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="graficoBarras" style="max-height: 400px;"></canvas>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <canvas id="graficoBarras" style="max-height: 400px;"></canvas>
+            </section>
+            <section class="col-lg-6 connectedSortable ui-sortable">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Evolución mensual de gastos</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="graficoArea" style="max-height: 400px;"></canvas>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
     @else
         <h1>Dashboard</h1>
     @endif
@@ -126,6 +138,34 @@
                         return coloresBarras[index % coloresBarras.length];
                     },
                     borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        var datosGastos = @json($datosGastos);
+        var ctx = document.getElementById('graficoArea').getContext('2d');
+        var graficoArea = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: datosGastos.map(function (dato) {
+                    return dato.mes;
+                }),
+                datasets: [{
+                    label: 'Gastos',
+                    data: datosGastos.map(function (dato) {
+                        return dato.total;
+                    }),
+                    backgroundColor: 'rgba(60,141,188,0.9)',
+                    borderColor: 'rgba(60,141,188,0.8)',
+                    fill: true
                 }]
             },
             options: {

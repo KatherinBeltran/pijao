@@ -83,7 +83,6 @@ class PrestamoController extends Controller
     $messages = [
         'nom_cli_pre.required' => 'El nombre del cliente es obligatorio.',
         'num_ced_cli_pre.required' => 'La cédula del cliente es obligatoria.',
-        'num_ced_cli_pre.unique' => 'Ya existe un cliente con esta cédula.',
         'num_cel_cli_pre.required' => 'El número de teléfono del cliente es obligatorio.',
         'dir_cli_pre.required' => 'La dirección del cliente es obligatoria.',
         'bar_cli_pre.required' => 'El barrio del cliente es obligatorio.',
@@ -96,7 +95,7 @@ class PrestamoController extends Controller
     // Validación personalizada para verificar si la cédula ya existe
     $request->validate([
         'nom_cli_pre' => 'required',
-        'num_ced_cli_pre' => 'required|unique:prestamos,num_ced_cli_pre',
+        'num_ced_cli_pre' => 'required',
         'num_cel_cli_pre' => 'required',
         'dir_cli_pre' => 'required',
         'bar_cli_pre' => 'required',

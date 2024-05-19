@@ -48,18 +48,19 @@ class CuotaController extends Controller
                 ->join('barrios', 'prestamos.bar_cli_pre', '=', 'barrios.id')
                 ->where('barrios.zon_bar', $cobrador->zon_cob)
                 ->where(function ($query) {
-                    $query->whereExists(function ($query) {
-                        $query->selectRaw('1')
-                            ->from('prestamos')
-                            ->whereRaw('prestamos.cuo_pre < cuotas.num_cuo')
-                            ->orWhereRaw('cuotas.sal_cuo <> 0')
-                            ->orWhereRaw('cuotas.pre_cuo IS NULL')
-                            ->orWhereRaw('cuotas.fec_cuo IS NULL')
-                            ->orWhereRaw('cuotas.val_cuo IS NULL')
-                            ->orWhereRaw('cuotas.tot_abo_cuo IS NULL')
-                            ->orWhereRaw('cuotas.sal_cuo IS NULL')
-                            ->orWhereRaw('cuotas.num_cuo IS NULL');
-                    });
+                    $query->whereRaw("DATE(cuotas.fec_cuo) = CURDATE()")
+                        ->whereExists(function ($query) {
+                            $query->selectRaw('1')
+                                ->from('prestamos')
+                                ->whereRaw('prestamos.cuo_pre < cuotas.num_cuo')
+                                ->orWhereRaw('cuotas.sal_cuo <> 0')
+                                ->orWhereRaw('cuotas.pre_cuo IS NULL')
+                                ->orWhereRaw('cuotas.fec_cuo IS NULL')
+                                ->orWhereRaw('cuotas.val_cuo IS NULL')
+                                ->orWhereRaw('cuotas.tot_abo_cuo IS NULL')
+                                ->orWhereRaw('cuotas.sal_cuo IS NULL')
+                                ->orWhereRaw('cuotas.num_cuo IS NULL');
+                        });
                 });
     
             $cuotas = $cuotasQuery->paginate(10000);

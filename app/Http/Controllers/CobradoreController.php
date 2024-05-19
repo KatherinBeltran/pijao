@@ -84,7 +84,7 @@ class CobradoreController extends Controller
         $user = new User([
             'name' => $cobradores->nom_cob,
             'email' => $cobradores->cor_ele_cob,
-            'password' => bcrypt('Inv' . $cobradores->num_ced_cob),
+            'password' => bcrypt($cobradores->num_ced_cob),
         ]);
         $user->save();
 

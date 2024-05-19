@@ -84,10 +84,32 @@ class HomeController extends Controller
         );
     }
 
+    // Obtener los datos de gastos por mes
+    $gastosPorMes = DB::table('gastos')
+    ->select(
+        DB::raw('MONTH(fec_gas) as mes'),
+        DB::raw('YEAR(fec_gas) as anio'),
+        DB::raw('SUM(mon_gas) as total')
+    )
+    ->groupBy('mes', 'anio')
+    ->orderBy('anio', 'asc')
+    ->orderBy('mes', 'asc')
+    ->get();
+
+    $datosGastos = array();
+    foreach ($gastosPorMes as $gasto) {
+    $mes = Carbon::createFromDate(null, $gasto->mes, null)->isoFormat('MMMM');
+    $datosGastos[] = array(
+        'mes' => $mes . ' ' . $gasto->anio,
+        'total' => $gasto->total
+    );
+    }
+
     return view('home', [
         'prestamosPendientes' => $prestamosPendientes,
         'esAdmin' => $esAdmin,
         'datos' => $datos,
+        'datosGastos' => $datosGastos,
         'cobradorCount' => $cobradorCount,
         'prestamoCount' => $prestamoCount,
         'gastoCount' => $gastoCount,
