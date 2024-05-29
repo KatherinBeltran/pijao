@@ -390,7 +390,7 @@ return [
         [
             'text'    => 'Reporte económico',
             'url'  => 'reportes',
-            'icon'    => 'fa fa-file-pdf fa-2x',
+            'icon'    => 'fa fa-file fa-2x',
             'can' => ['reportes.index'],
         ],
     ],

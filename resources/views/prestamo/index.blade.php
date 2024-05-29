@@ -52,7 +52,7 @@
         </thead>
         <tbody>
             @foreach ($prestamos as $prestamo)
-            <tr>
+            <tr class="@if ($prestamo->val_pag_pre == $prestamo->tot_pre) row-green @endif">
                 <td>{{ $prestamo->id }}</td>
                 
                 <td>{{ $prestamo->nom_cli_pre }}</td>
@@ -107,11 +107,16 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap4.min.css">
 
     <style>
-    #example_wrapper .paginate_button.page-item.active > a.page-link {
-    background-color: lightgray !important;
-    color: black !important;
-    border-color: gray !important;
-    }
+        #example_wrapper .paginate_button.page-item.active > a.page-link {
+            background-color: lightgray !important;
+            color: black !important;
+            border-color: gray !important;
+        }
+
+        .row-green {
+            background-color: green !important;
+            color: white !important;
+        }
     </style>
 @stop
 

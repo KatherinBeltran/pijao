@@ -122,7 +122,7 @@
             type: 'bar',
             data: {
                 labels: datos.map(function (dato) {
-                    return moment(dato.mes, 'MMMM YYYY').format('MMMM YYYY');
+                    return dato.mes;
                 }),
                 datasets: [{
                     label: 'Suma de capital',

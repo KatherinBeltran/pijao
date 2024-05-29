@@ -28,6 +28,7 @@
         <thead class="thead">
             <tr>
                 <th>Código prestamo</th>
+                <th>Cliente</th>
                 <th>Fecha</th>
                 <th>Valor</th>
                 <th>Total abonado</th>
@@ -42,8 +43,13 @@
                 @php
                     $prestamo = $prestamos->where('cuo_pre', $cuota->num_cuo)->first();
                 @endphp
-                <tr class="@if ($prestamo && $cuota->num_cuo == $prestamo->cuo_pre && !is_null($cuota->pre_cuo) && !is_null($cuota->fec_cuo) && !is_null($cuota->val_cuo) && !is_null($cuota->tot_abo_cuo) && !is_null($cuota->sal_cuo) && !is_null($cuota->num_cuo) && ($cuota->num_cuo > $prestamo->cuo_pag_pre || $cuota->sal_cuo == 0)) row-green @endif">
+                <tr class="@if (!is_null($cuota->pre_cuo) && !is_null($cuota->fec_cuo) && !is_null($cuota->val_cuo) && !is_null($cuota->tot_abo_cuo) && !is_null($cuota->sal_cuo) && !is_null($cuota->num_cuo))
+                    row-green 
+                @elseif ($cuota->fec_cuo < \Carbon\Carbon::now('America/Bogota')->format('Y-m-d'))
+                    row-red 
+                @endif">
                     <td>{{ $cuota->pre_cuo }}</td>
+                    <td>{{ $cuota->prestamo->nom_cli_pre }}</td>
                     <td>{{ $cuota->fec_cuo }}</td>
                     <td>{{ $cuota->val_cuo }}</td>
                     <td>{{ $cuota->tot_abo_cuo }}</td>
@@ -80,6 +86,10 @@
 
         .row-green {
             background-color: green !important;
+            color: white !important;
+        }
+        .row-red {
+            background-color: #dc3545 !important;
             color: white !important;
         }
     </style>

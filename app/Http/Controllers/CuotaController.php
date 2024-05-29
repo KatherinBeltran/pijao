@@ -41,27 +41,17 @@ class CuotaController extends Controller
         if ($cobrador) {
             // El usuario es un cobrador, obtener las cuotas asociadas a su zona
             $cuotasQuery = Cuota::select('cuotas.*')
-                ->join(DB::raw('(SELECT MAX(id) AS id FROM cuotas GROUP BY pre_cuo) AS sub'), function ($join) {
-                    $join->on('cuotas.id', '=', 'sub.id');
-                })
-                ->join('prestamos', 'cuotas.pre_cuo', '=', 'prestamos.id')
-                ->join('barrios', 'prestamos.bar_cli_pre', '=', 'barrios.id')
-                ->where('barrios.zon_bar', $cobrador->zon_cob)
-                ->where(function ($query) {
-                    $query->whereRaw("DATE(cuotas.fec_cuo) = CURDATE()")
-                        ->whereExists(function ($query) {
-                            $query->selectRaw('1')
-                                ->from('prestamos')
-                                ->whereRaw('prestamos.cuo_pre < cuotas.num_cuo')
-                                ->orWhereRaw('cuotas.sal_cuo <> 0')
-                                ->orWhereRaw('cuotas.pre_cuo IS NULL')
-                                ->orWhereRaw('cuotas.fec_cuo IS NULL')
-                                ->orWhereRaw('cuotas.val_cuo IS NULL')
-                                ->orWhereRaw('cuotas.tot_abo_cuo IS NULL')
-                                ->orWhereRaw('cuotas.sal_cuo IS NULL')
-                                ->orWhereRaw('cuotas.num_cuo IS NULL');
-                        });
-                });
+            ->join(DB::raw('(SELECT MAX(id) AS id FROM cuotas GROUP BY pre_cuo) AS sub'), function ($join) {
+                $join->on('cuotas.id', '=', 'sub.id');
+            })
+            ->join('prestamos', 'cuotas.pre_cuo', '=', 'prestamos.id')
+            ->join('barrios', 'prestamos.bar_cli_pre', '=', 'barrios.id')
+            ->where('barrios.zon_bar', $cobrador->zon_cob)
+            ->where(function ($query) {
+                $query->whereRaw("DATE(cuotas.fec_cuo) = CURDATE()")
+                      ->orWhereRaw("DATE(cuotas.fec_cuo) < CURDATE()");
+            })
+            ->whereNull('cuotas.sal_cuo');         
     
             $cuotas = $cuotasQuery->paginate(10000);
     
@@ -225,7 +215,34 @@ class CuotaController extends Controller
     
         // Verificar si el número de cuotas existentes es igual a cuo_pre
         $cuotas_existentes = Cuota::where('pre_cuo', $request->pre_cuo)->count();
-        if ($cuotas_existentes < $prestamo->cuo_pre) {
+    
+        // Verificar si sal_cuo es igual a 0
+        if ($request->sal_cuo == 0) {
+            // Actualizar los campos del préstamo
+            $prestamo->cuo_pag_pre = $prestamo->cuo_pre;
+            $prestamo->val_pag_pre = $prestamo->tot_pre;
+            $prestamo->sig_cuo_pre = $prestamo->cuo_pre;
+            $prestamo->cuo_pen_pre = 0;
+            $prestamo->val_cuo_pen_pre = 0;
+    
+            // Guardar los cambios en el préstamo
+            $prestamo->save();
+    
+            // Actualizar el registro actual con los campos editados que el usuario ha proporcionado
+            $cuota->update([
+                'fec_cuo' => $request->fec_cuo,
+                'val_cuo' => $request->val_cuo,
+                'tot_abo_cuo' => $request->tot_abo_cuo,
+                'sal_cuo' => $request->sal_cuo,
+                'obs_cuo' => $request->obs_cuo,
+            ]);
+    
+            return redirect()->route('cuotas.index')
+                ->with('success', '<div class="alert alert-success alert-dismissible">
+                                        <h5><i class="icon fas fa-check"></i> ¡Éxito!</h5>
+                                        Cuota actualizada exitosamente.
+                                    </div>');
+        } elseif ($cuotas_existentes < $prestamo->cuo_pre) {
             // Incrementar el número de cuotas existentes
             $cuotas_existentes++;
     
@@ -286,53 +303,53 @@ class CuotaController extends Controller
                                         <h5><i class="icon fas fa-check"></i> ¡Éxito!</h5>
                                         Cuota actualizada exitosamente.
                                     </div>');
-        }
+        } else {
+            // Si el número de cuotas existentes ya es igual a cuo_pre, solo actualizamos el registro actual
+            $cuota->update([
+                'pre_cuo' => $request->pre_cuo,
+                'fec_cuo' => $request->fec_cuo,
+                'val_cuo' => $request->val_cuo,
+                'tot_abo_cuo' => $request->tot_abo_cuo,
+                'sal_cuo' => $request->sal_cuo,
+                'obs_cuo' => $request->obs_cuo,
+            ]);
     
-        // Si el número de cuotas existentes ya es igual a cuo_pre, solo actualizamos el registro actual
-        $cuota->update([
-            'pre_cuo' => $request->pre_cuo,
-            'fec_cuo' => $request->fec_cuo,
-            'val_cuo' => $request->val_cuo,
-            'tot_abo_cuo' => $request->tot_abo_cuo,
-            'sal_cuo' => $request->sal_cuo,
-            'obs_cuo' => $request->obs_cuo,
-        ]);
+            // Después de realizar la actualización de la cuota, obtenemos el valor de num_cuo
+            $num_cuo = $cuota->num_cuo;
     
-        // Después de realizar la actualización de la cuota, obtenemos el valor de num_cuo
-        $num_cuo = $cuota->num_cuo;
+            // Actualizamos el campo cuo_pag_pre del préstamo asociado
+            $prestamo->cuo_pag_pre = $num_cuo;
     
-        // Actualizamos el campo cuo_pag_pre del préstamo asociado
-        $prestamo->cuo_pag_pre = $num_cuo;
+            // Obtener el total abonado
+            $tot_abo_cuo = $request->tot_abo_cuo;
     
-        // Obtener el total abonado
-        $tot_abo_cuo = $request->tot_abo_cuo;
+            // Asignar el total abonado al campo val_pag_pre del préstamo asociado
+            $prestamo->val_pag_pre = $tot_abo_cuo;
     
-        // Asignar el total abonado al campo val_pag_pre del préstamo asociado
-        $prestamo->val_pag_pre = $tot_abo_cuo;
+            // Actualizamos el campo sig_cuo_pre del préstamo asociado con el valor de cuotas_existentes
+            $prestamo->sig_cuo_pre = $cuotas_existentes;
     
-        // Actualizamos el campo sig_cuo_pre del préstamo asociado con el valor de cuotas_existentes
-        $prestamo->sig_cuo_pre = $cuotas_existentes;
+            // Calcular el número de cuotas pendientes
+            $cuo_pen_pre = $prestamo->cuo_pre - $prestamo->cuo_pag_pre;
     
-        // Calcular el número de cuotas pendientes
-        $cuo_pen_pre = $prestamo->cuo_pre - $prestamo->cuo_pag_pre;
+            // Actualizar el campo cuo_pen_pre del préstamo asociado con el valor calculado
+            $prestamo->cuo_pen_pre = $cuo_pen_pre;
     
-        // Actualizar el campo cuo_pen_pre del préstamo asociado con el valor calculado
-        $prestamo->cuo_pen_pre = $cuo_pen_pre;
+            // Calcular el valor de las cuotas pendientes
+            $val_cuo_pen_pre = $prestamo->tot_pre - $prestamo->val_pag_pre;
     
-        // Calcular el valor de las cuotas pendientes
-        $val_cuo_pen_pre = $prestamo->tot_pre - $prestamo->val_pag_pre;
+            // Actualizar el campo val_cuo_pen_pre del préstamo asociado con el valor calculado
+            $prestamo->val_cuo_pen_pre = $val_cuo_pen_pre;
     
-        // Actualizar el campo val_cuo_pen_pre del préstamo asociado con el valor calculado
-        $prestamo->val_cuo_pen_pre = $val_cuo_pen_pre;
+            // Guardamos los cambios en el préstamo
+            $prestamo->save();
     
-        // Guardamos los cambios en el préstamo
-        $prestamo->save();
-    
-        return redirect()->route('cuotas.index')
+            return redirect()->route('cuotas.index')
             ->with('success', '<div class="alert alert-success alert-dismissible">
                                     <h5><i class="icon fas fa-check"></i> ¡Éxito!</h5>
                                     Cuota actualizada exitosamente.
                                 </div>');
+        }
     }
     
     protected function calcularFechaVencimiento($fechaActual, $tipoPago)
