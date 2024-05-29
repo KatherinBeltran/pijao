@@ -22,6 +22,9 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Auth::routes();
 
+Route::get('paga-diario/excel', [App\Http\Controllers\PagaDiarioController::class, 'generarExcel'])->name('paga-diario.excel');
+Route::get('/paga-diario/pdf', [App\Http\Controllers\PagaDiarioController::class, 'generarPDF'])->name('paga-diario.pdf');
+Route::resource('paga-diario', App\Http\Controllers\PagaDiarioController::class);
 Route::get('reportes/excel', [App\Http\Controllers\ReporteController::class, 'generarExcel'])->name('reportes.excel');
 Route::get('/reportes/pdf', [App\Http\Controllers\ReporteController::class, 'generarPDF'])->name('reportes.pdf');
 Route::resource('reportes', App\Http\Controllers\ReporteController::class);

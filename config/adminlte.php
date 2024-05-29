@@ -393,6 +393,12 @@ return [
             'icon'    => 'fa fa-file fa-2x',
             'can' => ['reportes.index'],
         ],
+        [
+            'text'    => 'Paga diario',
+            'url'  => 'paga-diario',
+            'icon'    => 'fa fa-file fa-2x',
+            'can' => ['paga-diario.index'],
+        ],
     ],
 
     /*

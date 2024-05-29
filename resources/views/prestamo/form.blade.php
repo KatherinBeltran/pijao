@@ -45,7 +45,8 @@
             </div>
             <div class="form-group">
                 {{ Form::label('Capital') }}
-                {{ Form::text('cap_pre', $prestamo->cap_pre, ['id' => 'cap_pre', 'class' => 'form-control' . ($errors->has('cap_pre') ? ' is-invalid' : ''), 'placeholder' => 'Capital', 'oninput' => 'formatearNumero(this); calcularTotal(); calcularCuota()']) }}
+                {{ Form::text('cap_pre_visible', $prestamo->cap_pre, ['id' => 'cap_pre_visible', 'class' => 'form-control' . ($errors->has('cap_pre') ? ' is-invalid' : ''), 'placeholder' => 'Capital', 'oninput' => 'formatearNumero(this); actualizarCampoOculto(); calcularTotal(); calcularCuota()']) }}
+                {{ Form::hidden('cap_pre', $prestamo->cap_pre, ['id' => 'cap_pre']) }}
                 {!! $errors->first('cap_pre', '<div class="invalid-feedback">:message</div>') !!}
             </div>
         </div> 
@@ -110,12 +111,69 @@
         <a href="{{ route('prestamos.index') }}" class="btn btn-outline-danger btn-sm custom-btn">Cancelar</a>
     </div>
 </div>
+
 <script>
+    // Función para formatear el número con separadores de miles
+    function formatearNumero(input) {
+        // Eliminar caracteres no numéricos excepto puntos decimales
+        let valor = input.value.replace(/[^0-9]/g, '');
+        // Convertir el valor a número
+        let numero = parseFloat(valor);
+
+        // Verificar si el número es válido
+        if (!isNaN(numero)) {
+            // Formatear el número con separadores de miles
+            input.value = numero.toLocaleString('es-ES');
+        } else {
+            input.value = '';
+        }
+    }
+
+    // Función para obtener el valor numérico del campo formateado
+    function obtenerValorNumerico(input) {
+        // Eliminar caracteres no numéricos y convertir a número
+        return parseFloat(input.value.replace(/[^0-9]/g, '')) || 0;
+    }
+
+    // Función para actualizar el campo oculto
+    function actualizarCampoOculto() {
+        var campoVisible = document.getElementById('cap_pre_visible');
+        var campoOculto = document.getElementById('cap_pre');
+        campoOculto.value = obtenerValorNumerico(campoVisible);
+    }
+
+    // Función para calcular el total a pagar
+    function calcularTotal() {
+        var capital = obtenerValorNumerico(document.getElementById('cap_pre_visible'));
+        var interes = parseFloat(document.getElementById('interes').value);
+
+        // Verificar si los valores son válidos
+        if (!isNaN(capital) && !isNaN(interes)) {
+            var total = capital + (capital * (interes / 100));
+            document.getElementById('tot_pre').value = total.toFixed(0);
+        } else {
+            document.getElementById('tot_pre').value = '';
+        }
+    }
+
+    // Función para calcular el valor de la cuota
+    function calcularCuota() {
+        var total = parseFloat(document.getElementById('tot_pre').value);
+        var cuotas = parseFloat(document.getElementById('cuo_pre').value);
+
+        // Verificar si los valores son válidos
+        if (!isNaN(total) && !isNaN(cuotas) && cuotas !== 0) {
+            var valorCuota = total / cuotas;
+            document.getElementById('val_cuo_pre').value = valorCuota.toFixed(0);
+        } else {
+            document.getElementById('val_cuo_pre').value = '';
+        }
+    }
+
     // Función para calcular la cuota predeterminada
     function calcularCuotaPredeterminada() {
         var pagPre = document.getElementById('pag_pre').value;
         var cuoPreInput = document.getElementById('cuo_pre');
-
         // Verificar si el campo cuo_pre ha sido editado manualmente por el usuario
         var editedManually = cuoPreInput.dataset.edited === 'true';
 
@@ -147,48 +205,21 @@
     document.getElementById('cuo_pre').addEventListener('input', function() {
         this.dataset.edited = 'true';
     });
-</script>
 
-<script>
-    // Función para calcular el total a pagar
-    function calcularTotal() {
-        var capital = parseFloat(document.getElementById('cap_pre').value);
-        var interes = parseFloat(document.getElementById('interes').value);
-
-        // Verificar si los valores son válidos
-        if (!isNaN(capital) && !isNaN(interes)) {
-            var total = capital + (capital * (interes / 100));
-            document.getElementById('tot_pre').value = total.toFixed(0);
-        } else {
-            document.getElementById('tot_pre').value = '';
-        }
-    }
-
-    // Llamar a la función al cargar la página
+    // Llamar a las funciones al cargar la página
     calcularTotal();
-</script>
-
-<script>
-    // Función para calcular el valor de la cuota
-    function calcularCuota() {
-        var total = parseFloat(document.getElementById('tot_pre').value);
-        var cuotas = parseFloat(document.getElementById('cuo_pre').value);
-
-        // Verificar si los valores son válidos
-        if (!isNaN(total) && !isNaN(cuotas) && cuotas !== 0) {
-            var valorCuota = total / cuotas;
-            document.getElementById('val_cuo_pre').value = valorCuota.toFixed(0);
-        } else {
-            document.getElementById('val_cuo_pre').value = '';
-        }
-    }
-
-    // Llamar a la función al cargar la página
     calcularCuota();
 
-    // Agregar un evento input al campo cap_pre
-    document.getElementById('cap_pre').addEventListener('input', function() {
+    // Agregar un evento input al campo cap_pre_visible
+    document.getElementById('cap_pre_visible').addEventListener('input', function() {
+        formatearNumero(this);
+        actualizarCampoOculto();
         calcularTotal();
         calcularCuota();
+    });
+
+    // Agregar un evento submit al formulario para quitar los separadores de miles antes de enviar
+    document.querySelector('form').addEventListener('submit', function(e) {
+        actualizarCampoOculto();
     });
 </script>
