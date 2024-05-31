@@ -65,10 +65,23 @@ class PrestamoController extends Controller
         $prestamo = new Prestamo();
         $barrios = Barrio::all();
 
+        $user = Auth::user();
+        if (!$user) {
+            return "No estás autenticado.";
+        }
+
+        $cobradoreEmail = $user->email;
+        $cobrador = DB::table('cobradores')->where('cor_ele_cob', $cobradoreEmail)->first();
+
+        $numCedCob = null;
+        if ($cobrador) {
+            $numCedCob = $cobrador->num_ced_cob;
+        }
+
         // Obtener la fecha y hora actual en el formato adecuado
         $now = Carbon::now('America/Bogota')->toDateTimeString();
         
-        return view('prestamo.create', compact('prestamo', 'barrios', 'now'));
+        return view('prestamo.create', compact('prestamo', 'barrios', 'now', 'numCedCob'));
     }    
 
     /**
@@ -158,6 +171,19 @@ class PrestamoController extends Controller
         $prestamo = Prestamo::find($id);
         $barrios = Barrio::all();
 
+        $user = Auth::user();
+        if (!$user) {
+            return "No estás autenticado.";
+        }
+
+        $cobradoreEmail = $user->email;
+        $cobrador = DB::table('cobradores')->where('cor_ele_cob', $cobradoreEmail)->first();
+
+        $numCedCob = null;
+        if ($cobrador) {
+            $numCedCob = $cobrador->num_ced_cob;
+        }
+
         // Verificar si el campo de fecha y hora está vacío
         if (empty($prestamo->fec_pre)) {
             // Obtener la fecha y hora actual en el formato adecuado
@@ -167,7 +193,7 @@ class PrestamoController extends Controller
             $now = $prestamo->fec_pre;
         }
     
-        return view('prestamo.edit', compact('prestamo', 'barrios', 'now'));
+        return view('prestamo.edit', compact('prestamo', 'barrios', 'now', 'numCedCob'));
     }    
 
     /**

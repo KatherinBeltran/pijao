@@ -47,6 +47,7 @@
             <th>Valor cuotas pendientes</th>
             <th>Estado</th>
             <th>Dias en mora</th>
+            <th>Registrado por</th>
             <th>Acciones</th>
         </tr>
         </thead>
@@ -84,6 +85,7 @@
                     @endif
                 </td>
                 <td>{{ $prestamo->dia_mor_pre }}</td>
+                <td>{{ $prestamo->reg_pre }}</td>
 
                 <td>
                 <form action="{{ route('prestamos.destroy',$prestamo->id) }}" method="POST">

@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property $val_cuo_pen_pre
  * @property $est_pag_pre
  * @property $dia_mor_pre
+ * @property $reg_pre
  * @property $created_at
  * @property $updated_at
  *
@@ -54,7 +55,7 @@ class Prestamo extends Model
      *
      * @var array
      */
-    protected $fillable = ['nom_cli_pre','num_ced_cli_pre','num_cel_cli_pre','dir_cli_pre','bar_cli_pre','fec_pre','pag_pre','cuo_pre','cap_pre','int_pre','tot_pre','val_cuo_pre','cuo_pag_pre','val_pag_pre','sig_cuo_pre','cuo_pen_pre','val_cuo_pen_pre','est_pag_pre','dia_mor_pre'];
+    protected $fillable = ['nom_cli_pre','num_ced_cli_pre','num_cel_cli_pre','dir_cli_pre','bar_cli_pre','fec_pre','pag_pre','cuo_pre','cap_pre','int_pre','tot_pre','val_cuo_pre','cuo_pag_pre','val_pag_pre','sig_cuo_pre','cuo_pen_pre','val_cuo_pen_pre','est_pag_pre','dia_mor_pre','reg_pre'];
 
 
     /**

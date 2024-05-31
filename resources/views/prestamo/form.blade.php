@@ -49,12 +49,12 @@
                 {{ Form::hidden('cap_pre', $prestamo->cap_pre, ['id' => 'cap_pre']) }}
                 {!! $errors->first('cap_pre', '<div class="invalid-feedback">:message</div>') !!}
             </div>
-        </div> 
-        <div class="col-md-6">   
             <div class="form-group">
                 {{ Form::label('Interes %') }}
                 {{ Form::text('interes', 20, ['id' => 'interes', 'class' => 'form-control', 'readonly']) }}
             </div>
+        </div> 
+        <div class="col-md-6">   
             <div class="form-group">
                 {{ Form::label('Total a pagar') }}
                 {{ Form::text('tot_pre', $prestamo->tot_pre, ['id' => 'tot_pre', 'class' => 'form-control' . ($errors->has('tot_pre') ? ' is-invalid' : ''), 'placeholder' => 'Total a pagar', 'readonly']) }}
@@ -103,6 +103,15 @@
                 {{ Form::label('Dias en mora') }}
                 {{ Form::text('dia_mor_pre', $prestamo->dia_mor_pre, ['class' => 'form-control' . ($errors->has('dia_mor_pre') ? ' is-invalid' : ''), 'placeholder' => 'Dias en mora', 'readonly' => 'disabled']) }}
                 {!! $errors->first('dia_mor_pre', '<div class="invalid-feedback">:message</div>') !!}
+            </div>
+            <div class="form-group">
+                {{ Form::label('Registrado por') }}
+                @if ($numCedCob)
+                    {{ Form::text('reg_pre', $prestamo->reg_pre, ['class' => 'form-control' . ($errors->has('reg_pre') ? ' is-invalid' : ''), 'placeholder' => 'Registrado por', 'readonly' => 'disabled']) }}
+                @else
+                    {{ Form::text('reg_pre', $prestamo->reg_pre, ['class' => 'form-control' . ($errors->has('reg_pre') ? ' is-invalid' : ''), 'placeholder' => 'Registrado por', 'readonly' => 'disabled']) }}
+                @endif
+                {!! $errors->first('reg_pre', '<div class="invalid-feedback">:message</div>') !!}
             </div>
         </div>
     </div>

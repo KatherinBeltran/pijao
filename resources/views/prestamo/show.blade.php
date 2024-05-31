@@ -60,12 +60,12 @@
                                     <strong>Capital:</strong>
                                     {{ $prestamo->cap_pre }}
                                 </div>
-                            </div>
-                            <div class="col-md-6">
                                 <div class="form-group">
                                     <strong>Interes %:</strong>
                                     {{ $prestamo->int_pre }}
                                 </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <strong>Total:</strong>
                                     {{ $prestamo->tot_pre }}
@@ -101,6 +101,10 @@
                                 <div class="form-group">
                                     <strong>Dias en mora:</strong>
                                     {{ $prestamo->dia_mor_pre }}
+                                </div>
+                                <div class="form-group">
+                                    <strong>Registrado por:</strong>
+                                    {{ $prestamo->reg_pre }}
                                 </div>
                             </div>
                         </div>

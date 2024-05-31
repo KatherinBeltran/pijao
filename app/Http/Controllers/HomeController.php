@@ -40,17 +40,34 @@ class HomeController extends Controller
     // Tu lógica para obtener los datos de la tabla de prestamos
     $prestamos = Prestamo::all();
 
-    // Obtener el conteo de registros de la tabla prestamos
-    $prestamoCount = $prestamos->count();
+    // Obtener el conteo de préstamos que cumplen con la condición
+    $prestamosActivos = 0;
+
+    foreach ($prestamos as $prestamo) {
+        // Verificar si val_pag_pre es diferente de tot_pre
+        if ($prestamo->val_pag_pre != $prestamo->tot_pre) {
+            $prestamosActivos++;
+        }
+    }
 
     // Obtener el conteo de cuotas que cumplen con la condición
     $cuotasActivas = 0;
     foreach ($prestamos as $prestamo) {
         $cuotas = $prestamo->cuotas;
-        foreach ($cuotas as $cuota) {
-            if (is_null($cuota->pre_cuo) || is_null($cuota->fec_cuo) || is_null($cuota->val_cuo) || is_null($cuota->tot_abo_cuo) || is_null($cuota->sal_cuo) || is_null($cuota->num_cuo)) {
-                $cuotasActivas++;
-            }
+        
+        // Ordenar las cuotas por fec_cuo en orden descendente
+        $cuotaMasReciente = $cuotas->sortByDesc('fec_cuo')->first();
+        
+        // Verificar si las propiedades necesarias no son nulas en la cuota más reciente
+        if ($cuotaMasReciente && (
+            is_null($cuotaMasReciente->pre_cuo) || 
+            is_null($cuotaMasReciente->fec_cuo) || 
+            is_null($cuotaMasReciente->val_cuo) || 
+            is_null($cuotaMasReciente->tot_abo_cuo) || 
+            is_null($cuotaMasReciente->sal_cuo) || 
+            is_null($cuotaMasReciente->num_cuo)
+        )) {
+            $cuotasActivas++;
         }
     }
 
@@ -111,7 +128,7 @@ class HomeController extends Controller
         'datos' => $datos,
         'datosGastos' => $datosGastos,
         'cobradorCount' => $cobradorCount,
-        'prestamoCount' => $prestamoCount,
+        'prestamosActivos' => $prestamosActivos,
         'gastoCount' => $gastoCount,
         'cuotasActivas' => $cuotasActivas,
     ]);

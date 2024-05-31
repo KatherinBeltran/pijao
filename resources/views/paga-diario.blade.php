@@ -39,14 +39,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                        </tr>
+                        @foreach ($nuevosPrestamosCobrador as $nuevoPrestamo)
+                            <tr>
+                                <td>{{ $nuevoPrestamo->nom_cob }}</td>
+                                <td>{{ $nuevoPrestamo->val_cuo_pre }}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
                 <br>
