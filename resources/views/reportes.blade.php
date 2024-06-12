@@ -39,12 +39,12 @@
                             @foreach($reporte as $item)
                                 <tr>
                                     <td>{{ $item->nom_cat }}</td>
-                                    <td>{{ $item->suma_montos }}</td>
+                                    <td>{{ number_format($item->suma_montos, 0, '', '.') }}</td>
                                 </tr>
                             @endforeach
                             <tr>
                                 <td><strong>Total</strong></td>
-                                <td><strong>{{ $reporte->sum('suma_montos') }}</strong></td>
+                                <td>{{ number_format($reporte->sum('suma_montos'), 0, '', '.') }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -60,23 +60,23 @@
                         <tbody>
                             <tr>
                                 <td>Capital Prestado</td>
-                                <td>{{ $capitalPrestado }}</td>
+                                <td>{{ number_format($capitalPrestado, 0, ',', '.') }}</td>
                             </tr>
                             <tr>
                                 <td>Total Recolectado</td>
-                                <td>{{ $totalRecolectado }}</td>
+                                <td>{{ number_format($totalRecolectado, 0, ',', '.') }}</td>
                             </tr>
                             <tr>
                                 <td>Total Dinero prestado con intereses</td>
-                                <td>{{ $totalDineroPrestadoConIntereses }}</td>
+                                <td>{{ number_format($totalDineroPrestadoConIntereses, 0, ',', '.') }}</td>
                             </tr>
                             <tr>
                                 <td>Total Utilidad</td>
-                                <td>{{ $totalUtilidad }}</td>
+                                <td>{{ number_format($totalUtilidad, 0, ',', '.') }}</td>
                             </tr>
                             <tr>
                                 <td>Utilidad Neta con gastos</td>
-                                <td>{{ $utilidadNetaConGastos }}</td>
+                                <td>{{ number_format($utilidadNetaConGastos, 0, ',', '.') }}</td>
                             </tr>
                         </tbody>
                     </table>

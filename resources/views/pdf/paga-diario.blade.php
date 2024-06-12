@@ -71,11 +71,11 @@
         <tbody>
             <tr>
                 <td>Total recogido</td>
-                <td>{{ $sumaValCuo }}</td>
+                <td>{{ number_format($sumaValCuo, 0, '', '.') }}</td>
             </tr>
             <tr>
                 <td>Total prestado</td>
-                <td>{{ $sumaCapPre }}</td>
+                <td>{{ number_format($sumaCapPre, 0, '', '.') }}</td>
             </tr>
         </tbody>
     </table>
@@ -92,7 +92,7 @@
             @foreach ($nuevosPrestamosCobrador as $nuevoPrestamo)
                 <tr>
                     <td>{{ $nuevoPrestamo->nom_cob }}</td>
-                    <td>{{ $nuevoPrestamo->val_cuo_pre * 2 }}</td>
+                    <td>{{ number_format($nuevoPrestamo->val_cuo_pre * 2, 0, '', '.') }}</td>
                 </tr>
             @endforeach
         </tbody>
