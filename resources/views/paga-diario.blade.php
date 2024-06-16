@@ -3,7 +3,7 @@
 @section('title', 'Paga Diario')
 
 @section('content_header')
-    <h1>Paga Diario</h1>
+<h1>Paga Diario</h1>
 @stop
 
 @section('content')
@@ -19,6 +19,10 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr>
+                            <td>Valor a recoger</td>
+                            <td>{{ number_format($valorARecoger, 0, '', '.') }}</td>
+                        </tr>
                         <tr>
                             <td>Total recogido</td>
                             <td>{{ number_format($sumaValCuo, 0, '', '.') }}</td>
@@ -40,10 +44,10 @@
                     </thead>
                     <tbody>
                         @foreach ($nuevosPrestamosCobrador as $nuevoPrestamo)
-                            <tr>
-                                <td>{{ $nuevoPrestamo->nom_cob }}</td>
-                                <td>{{ number_format($nuevoPrestamo->val_cuo_pre, 0, '', '.') }}</td>
-                            </tr>
+                        <tr>
+                            <td>{{ $nuevoPrestamo->nom_cob }}</td>
+                            <td>{{ number_format($nuevoPrestamo->val_cuo_pre, 0, '', '.') }}</td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>

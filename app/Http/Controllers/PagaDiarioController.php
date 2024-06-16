@@ -29,14 +29,22 @@ class PagaDiarioController extends Controller
 
         // Consultar la base de datos para obtener la suma de cap_pre
         $sumaCapPre = Prestamo::whereDate('fec_pre', $fechaHoy)->sum('cap_pre');
-    
+
+        // Obtener la suma de val_cuo_pre como "Valor a recoger"
+        $valorARecoger = Prestamo::whereIn('prestamos.id', function($query) use ($fechaHoy) {
+            $query->select('prestamos.id')
+                  ->from('prestamos')
+                  ->join('cuotas', 'cuotas.pre_cuo', '=', 'prestamos.id')
+                  ->whereDate('cuotas.fec_cuo', $fechaHoy);
+        })->sum('val_cuo_pre');
+
         // Obtener los nuevos préstamos realizados hoy, junto con el nombre del cobrador
         $nuevosPrestamosCobrador = Prestamo::whereDate('fec_pre', $fechaHoy)
             ->join('cobradores', 'prestamos.reg_pre', '=', 'cobradores.num_ced_cob')
             ->select('cobradores.nom_cob', 'prestamos.val_cuo_pre')
             ->get();
-    
-        return view('paga-diario', compact('sumaValCuo', 'sumaCapPre', 'nuevosPrestamosCobrador'));
+
+        return view('paga-diario', compact('sumaValCuo', 'sumaCapPre', 'valorARecoger', 'nuevosPrestamosCobrador'));
     }
 
     public function generarPDF(Request $request)
@@ -50,32 +58,40 @@ class PagaDiarioController extends Controller
         // Consultar la base de datos para obtener la suma de cap_pre
         $sumaCapPre = Prestamo::whereDate('fec_pre', $fechaHoy)->sum('cap_pre');
 
+        // Obtener la suma de val_cuo_pre como "Valor a recoger"
+        $valorARecoger = Prestamo::whereIn('prestamos.id', function($query) use ($fechaHoy) {
+            $query->select('prestamos.id')
+                  ->from('prestamos')
+                  ->join('cuotas', 'cuotas.pre_cuo', '=', 'prestamos.id')
+                  ->whereDate('cuotas.fec_cuo', $fechaHoy);
+        })->sum('val_cuo_pre');
+
         // Obtener los nuevos préstamos realizados hoy, junto con el nombre del cobrador
         $nuevosPrestamosCobrador = Prestamo::whereDate('fec_pre', $fechaHoy)
-        ->join('cobradores', 'prestamos.reg_pre', '=', 'cobradores.num_ced_cob')
-        ->select('cobradores.nom_cob', 'prestamos.val_cuo_pre')
-        ->get();
-    
+            ->join('cobradores', 'prestamos.reg_pre', '=', 'cobradores.num_ced_cob')
+            ->select('cobradores.nom_cob', 'prestamos.val_cuo_pre')
+            ->get();
+
         // Crear una instancia de Dompdf
         $options = new Options();
         $options->set('isHtml5ParserEnabled', true);
         $dompdf = new Dompdf($options);
-    
+
         // Crear el contenido HTML del PDF
-        $html = view('pdf.paga-diario', compact('sumaValCuo', 'sumaCapPre', 'nuevosPrestamosCobrador'))->render();
-    
+        $html = view('pdf.paga-diario', compact('sumaValCuo', 'sumaCapPre', 'valorARecoger', 'nuevosPrestamosCobrador'))->render();
+
         // Cargar el contenido HTML al Dompdf
         $dompdf->loadHtml($html);
-    
+
         // Establecer el tamaño de papel y la orientación
         $dompdf->setPaper('A4', 'portrait');
-    
+
         // Renderizar el PDF
         $dompdf->render();
-    
+
         // Obtener el contenido del PDF como una cadena
         $output = $dompdf->output();
-    
+
         // Devolver el PDF como una respuesta HTTP
         return Response::make($output, 200, [
             'Content-Type' => 'application/pdf',
@@ -85,22 +101,30 @@ class PagaDiarioController extends Controller
 
     public function generarExcel(Request $request)
     {
-       // Obtener la fecha actual en Bogotá, Colombia
-       $fechaHoy = now()->setTimezone('America/Bogota')->toDateString();
+        // Obtener la fecha actual en Bogotá, Colombia
+        $fechaHoy = now()->setTimezone('America/Bogota')->toDateString();
 
-       // Consultar la base de datos para obtener la suma de val_cuo
-       $sumaValCuo = Cuota::whereDate('fec_cuo', $fechaHoy)->sum('val_cuo');
+        // Consultar la base de datos para obtener la suma de val_cuo
+        $sumaValCuo = Cuota::whereDate('fec_cuo', $fechaHoy)->sum('val_cuo');
 
-       // Consultar la base de datos para obtener la suma de cap_pre
-       $sumaCapPre = Prestamo::whereDate('fec_pre', $fechaHoy)->sum('cap_pre');
-       
+        // Consultar la base de datos para obtener la suma de cap_pre
+        $sumaCapPre = Prestamo::whereDate('fec_pre', $fechaHoy)->sum('cap_pre');
+
+        // Obtener la suma de val_cuo_pre como "Valor a recoger"
+        $valorARecoger = Prestamo::whereIn('prestamos.id', function($query) use ($fechaHoy) {
+            $query->select('prestamos.id')
+                  ->from('prestamos')
+                  ->join('cuotas', 'cuotas.pre_cuo', '=', 'prestamos.id')
+                  ->whereDate('cuotas.fec_cuo', $fechaHoy);
+        })->sum('val_cuo_pre');
+
         // Obtener los nuevos préstamos realizados hoy, junto con el nombre del cobrador
         $nuevosPrestamosCobrador = Prestamo::whereDate('fec_pre', $fechaHoy)
-        ->join('cobradores', 'prestamos.reg_pre', '=', 'cobradores.num_ced_cob')
-        ->select('cobradores.nom_cob', 'prestamos.val_cuo_pre')
-        ->get();
+            ->join('cobradores', 'prestamos.reg_pre', '=', 'cobradores.num_ced_cob')
+            ->select('cobradores.nom_cob', 'prestamos.val_cuo_pre')
+            ->get();
 
         // Exportar a Excel
-        return Excel::download(new PagaDiarioExport($sumaValCuo, $sumaCapPre, $nuevosPrestamosCobrador), 'paga-diario.xlsx');
+        return Excel::download(new PagaDiarioExport($sumaValCuo, $sumaCapPre, $valorARecoger, $nuevosPrestamosCobrador), 'paga-diario.xlsx');
     }
 }

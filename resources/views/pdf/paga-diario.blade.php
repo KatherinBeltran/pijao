@@ -70,6 +70,10 @@
         </thead>
         <tbody>
             <tr>
+                <td>Valor a recoger</td>
+                <td>{{ number_format($valorARecoger, 0, '', '.') }}</td>
+            </tr>
+            <tr>
                 <td>Total recogido</td>
                 <td>{{ number_format($sumaValCuo, 0, '', '.') }}</td>
             </tr>

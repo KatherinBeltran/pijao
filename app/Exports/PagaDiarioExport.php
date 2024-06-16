@@ -11,12 +11,14 @@ class PagaDiarioExport implements FromView, WithColumnFormatting
 {
     protected $sumaValCuo;
     protected $sumaCapPre;
+    protected $valorARecoger;
     protected $nuevosPrestamosCobrador;
 
-    public function __construct($sumaValCuo, $sumaCapPre, $nuevosPrestamosCobrador)
+    public function __construct($sumaValCuo, $sumaCapPre, $valorARecoger, $nuevosPrestamosCobrador)
     {
         $this->sumaValCuo = $sumaValCuo;
         $this->sumaCapPre = $sumaCapPre;
+        $this->valorARecoger = $valorARecoger;
         $this->nuevosPrestamosCobrador = $nuevosPrestamosCobrador;
     }
 
@@ -25,6 +27,7 @@ class PagaDiarioExport implements FromView, WithColumnFormatting
         return view('excel.paga-diario', [
             'sumaValCuo' => $this->sumaValCuo,
             'sumaCapPre' => $this->sumaCapPre,
+            'valorARecoger' => $this->valorARecoger,
             'nuevosPrestamosCobrador' => $this->nuevosPrestamosCobrador,
         ]);
     }

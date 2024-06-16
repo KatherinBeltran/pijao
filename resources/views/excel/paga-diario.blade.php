@@ -56,6 +56,10 @@
         </thead>
         <tbody>
             <tr>
+                <td>Valor a recoger</td>
+                <td>{{ $valorARecoger }}</td>
+            </tr>
+            <tr>
                 <td>Total recogido</td>
                 <td>{{ $sumaValCuo }}</td>
             </tr>
