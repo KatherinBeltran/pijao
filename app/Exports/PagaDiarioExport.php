@@ -4,8 +4,10 @@ namespace App\Exports;
 
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class PagaDiarioExport implements FromView
+class PagaDiarioExport implements FromView, WithColumnFormatting
 {
     protected $sumaValCuo;
     protected $sumaCapPre;
@@ -25,5 +27,12 @@ class PagaDiarioExport implements FromView
             'sumaCapPre' => $this->sumaCapPre,
             'nuevosPrestamosCobrador' => $this->nuevosPrestamosCobrador,
         ]);
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'B' => '#,##0', // Formato personalizado para separar miles con punto
+        ];
     }
 }

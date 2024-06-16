@@ -106,11 +106,7 @@
             </div>
             <div class="form-group">
                 {{ Form::label('Registrado por') }}
-                @if ($numCedCob)
-                    {{ Form::text('reg_pre', $prestamo->reg_pre, ['class' => 'form-control' . ($errors->has('reg_pre') ? ' is-invalid' : ''), 'placeholder' => 'Registrado por', 'readonly' => 'disabled']) }}
-                @else
-                    {{ Form::text('reg_pre', $prestamo->reg_pre, ['class' => 'form-control' . ($errors->has('reg_pre') ? ' is-invalid' : ''), 'placeholder' => 'Registrado por', 'readonly' => 'disabled']) }}
-                @endif
+                {{ Form::text('reg_pre', $prestamo->reg_pre, ['class' => 'form-control' . ($errors->has('reg_pre') ? ' is-invalid' : ''), 'placeholder' => 'Registrado por', 'readonly' => 'disabled']) }}
                 {!! $errors->first('reg_pre', '<div class="invalid-feedback">:message</div>') !!}
             </div>
         </div>

@@ -14,7 +14,7 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Descripción</th>
+                            <th>Descripcion</th>
                             <th>Valor</th>
                         </tr>
                     </thead>
@@ -34,7 +34,7 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Descripción</th>
+                            <th>Descripcion</th>
                             <th>Valor</th>
                         </tr>
                     </thead>

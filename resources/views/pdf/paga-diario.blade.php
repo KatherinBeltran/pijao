@@ -92,7 +92,7 @@
             @foreach ($nuevosPrestamosCobrador as $nuevoPrestamo)
                 <tr>
                     <td>{{ $nuevoPrestamo->nom_cob }}</td>
-                    <td>{{ number_format($nuevoPrestamo->val_cuo_pre * 2, 0, '', '.') }}</td>
+                    <td>{{ number_format($nuevoPrestamo->val_cuo_pre, 0, '', '.') }}</td>
                 </tr>
             @endforeach
         </tbody>

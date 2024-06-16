@@ -50,18 +50,18 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Descripción</th>
+                <th>Descripcion</th>
                 <th>Valor</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>Total recogido</td>
-                <td>{{ number_format($sumaValCuo, 0, '', '.') }}</td>
+                <td>{{ $sumaValCuo }}</td>
             </tr>
             <tr>
                 <td>Total prestado</td>
-                <td>{{ number_format($sumaCapPre, 0, '', '.') }}</td>
+                <td>{{ $sumaCapPre }}</td>
             </tr>
         </tbody>
     </table>
@@ -70,7 +70,7 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Descripción</th>
+                <th>Descripcion</th>
                 <th>Valor</th>
             </tr>
         </thead>
@@ -78,7 +78,7 @@
             @foreach ($nuevosPrestamosCobrador as $nuevoPrestamo)
                 <tr>
                     <td>{{ $nuevoPrestamo->nom_cob }}</td>
-                    <td>{{ number_format($nuevoPrestamo->val_cuo_pre * 2, 0, '', '.') }}</td>
+                    <td>{{ $nuevoPrestamo->val_cuo_pre }}</td>
                 </tr>
             @endforeach
         </tbody>
