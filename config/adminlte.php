@@ -390,13 +390,13 @@ return [
         [
             'text'    => 'Reporte económico',
             'url'  => 'reportes',
-            'icon'    => 'fa fa-file fa-2x',
+            'icon'    => 'fa fa-file-pdf fa-2x',
             'can' => ['reportes.index'],
         ],
         [
             'text'    => 'Paga diario',
             'url'  => 'paga-diario',
-            'icon'    => 'fa fa-file fa-2x',
+            'icon'    => 'fa fa-file-excel fa-2x',
             'can' => ['paga-diario.index'],
         ],
     ],

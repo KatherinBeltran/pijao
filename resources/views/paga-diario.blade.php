@@ -43,10 +43,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($nuevosPrestamosCobrador as $nuevoPrestamo)
+                        @foreach ($cobradoresTotales as $nom_cob => $total)
                         <tr>
-                            <td>{{ $nuevoPrestamo->nom_cob }}</td>
-                            <td>{{ number_format($nuevoPrestamo->val_cuo_pre, 0, '', '.') }}</td>
+                            <td>{{ $nom_cob }}</td>
+                            <td>{{ number_format($total, 0, '', '.') }}</td>
                         </tr>
                         @endforeach
                     </tbody>

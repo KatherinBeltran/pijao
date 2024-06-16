@@ -79,11 +79,11 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($nuevosPrestamosCobrador as $nuevoPrestamo)
-                <tr>
-                    <td>{{ $nuevoPrestamo->nom_cob }}</td>
-                    <td>{{ $nuevoPrestamo->val_cuo_pre }}</td>
-                </tr>
+            @foreach ($cobradoresTotales as $nom_cob => $total)
+            <tr>
+                <td>{{ $nom_cob }}</td>
+                <td>{{ $total }}</td>
+            </tr>
             @endforeach
         </tbody>
     </table>

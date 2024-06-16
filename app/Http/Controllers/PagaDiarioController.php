@@ -38,13 +38,31 @@ class PagaDiarioController extends Controller
                   ->whereDate('cuotas.fec_cuo', $fechaHoy);
         })->sum('val_cuo_pre');
 
-        // Obtener los nuevos préstamos realizados hoy, junto con el nombre del cobrador
+        // Consultar todos los nuevos préstamos realizados hoy
         $nuevosPrestamosCobrador = Prestamo::whereDate('fec_pre', $fechaHoy)
-            ->join('cobradores', 'prestamos.reg_pre', '=', 'cobradores.num_ced_cob')
-            ->select('cobradores.nom_cob', 'prestamos.val_cuo_pre')
-            ->get();
+        ->join('cobradores', 'prestamos.reg_pre', '=', 'cobradores.num_ced_cob')
+        ->select('cobradores.nom_cob', 'prestamos.pag_pre', 'prestamos.val_cuo_pre', 'prestamos.tot_pre')
+        ->get();
 
-        return view('paga-diario', compact('sumaValCuo', 'sumaCapPre', 'valorARecoger', 'nuevosPrestamosCobrador'));
+        // Inicializar un array para almacenar los totales por cobrador
+        $cobradoresTotales = [];
+
+        // Procesar cada préstamo para calcular valor_calculado y agrupar por cobrador
+        foreach ($nuevosPrestamosCobrador as $prestamo) {
+        if ($prestamo->pag_pre === 'Diario') {
+            $prestamo->valor_calculado = $prestamo->val_cuo_pre;
+        } else {
+            $prestamo->valor_calculado = $prestamo->tot_pre / 30;
+        }
+
+        // Sumar al total correspondiente al cobrador
+        if (!isset($cobradoresTotales[$prestamo->nom_cob])) {
+            $cobradoresTotales[$prestamo->nom_cob] = 0;
+        }
+        $cobradoresTotales[$prestamo->nom_cob] += $prestamo->valor_calculado;
+        }
+
+        return view('paga-diario', compact('sumaValCuo', 'sumaCapPre', 'valorARecoger', 'cobradoresTotales'));
     }
 
     public function generarPDF(Request $request)
@@ -66,11 +84,29 @@ class PagaDiarioController extends Controller
                   ->whereDate('cuotas.fec_cuo', $fechaHoy);
         })->sum('val_cuo_pre');
 
-        // Obtener los nuevos préstamos realizados hoy, junto con el nombre del cobrador
+        // Consultar todos los nuevos préstamos realizados hoy
         $nuevosPrestamosCobrador = Prestamo::whereDate('fec_pre', $fechaHoy)
-            ->join('cobradores', 'prestamos.reg_pre', '=', 'cobradores.num_ced_cob')
-            ->select('cobradores.nom_cob', 'prestamos.val_cuo_pre')
-            ->get();
+        ->join('cobradores', 'prestamos.reg_pre', '=', 'cobradores.num_ced_cob')
+        ->select('cobradores.nom_cob', 'prestamos.pag_pre', 'prestamos.val_cuo_pre', 'prestamos.tot_pre')
+        ->get();
+
+        // Inicializar un array para almacenar los totales por cobrador
+        $cobradoresTotales = [];
+
+        // Procesar cada préstamo para calcular valor_calculado y agrupar por cobrador
+        foreach ($nuevosPrestamosCobrador as $prestamo) {
+        if ($prestamo->pag_pre === 'Diario') {
+            $prestamo->valor_calculado = $prestamo->val_cuo_pre;
+        } else {
+            $prestamo->valor_calculado = $prestamo->tot_pre / 30;
+        }
+
+        // Sumar al total correspondiente al cobrador
+        if (!isset($cobradoresTotales[$prestamo->nom_cob])) {
+            $cobradoresTotales[$prestamo->nom_cob] = 0;
+        }
+        $cobradoresTotales[$prestamo->nom_cob] += $prestamo->valor_calculado;
+        }
 
         // Crear una instancia de Dompdf
         $options = new Options();
@@ -78,7 +114,7 @@ class PagaDiarioController extends Controller
         $dompdf = new Dompdf($options);
 
         // Crear el contenido HTML del PDF
-        $html = view('pdf.paga-diario', compact('sumaValCuo', 'sumaCapPre', 'valorARecoger', 'nuevosPrestamosCobrador'))->render();
+        $html = view('pdf.paga-diario', compact('sumaValCuo', 'sumaCapPre', 'valorARecoger', 'cobradoresTotales'))->render();
 
         // Cargar el contenido HTML al Dompdf
         $dompdf->loadHtml($html);
@@ -118,13 +154,31 @@ class PagaDiarioController extends Controller
                   ->whereDate('cuotas.fec_cuo', $fechaHoy);
         })->sum('val_cuo_pre');
 
-        // Obtener los nuevos préstamos realizados hoy, junto con el nombre del cobrador
+        // Consultar todos los nuevos préstamos realizados hoy
         $nuevosPrestamosCobrador = Prestamo::whereDate('fec_pre', $fechaHoy)
-            ->join('cobradores', 'prestamos.reg_pre', '=', 'cobradores.num_ced_cob')
-            ->select('cobradores.nom_cob', 'prestamos.val_cuo_pre')
-            ->get();
+        ->join('cobradores', 'prestamos.reg_pre', '=', 'cobradores.num_ced_cob')
+        ->select('cobradores.nom_cob', 'prestamos.pag_pre', 'prestamos.val_cuo_pre', 'prestamos.tot_pre')
+        ->get();
+
+        // Inicializar un array para almacenar los totales por cobrador
+        $cobradoresTotales = [];
+
+        // Procesar cada préstamo para calcular valor_calculado y agrupar por cobrador
+        foreach ($nuevosPrestamosCobrador as $prestamo) {
+        if ($prestamo->pag_pre === 'Diario') {
+            $prestamo->valor_calculado = $prestamo->val_cuo_pre;
+        } else {
+            $prestamo->valor_calculado = $prestamo->tot_pre / 30;
+        }
+
+        // Sumar al total correspondiente al cobrador
+        if (!isset($cobradoresTotales[$prestamo->nom_cob])) {
+            $cobradoresTotales[$prestamo->nom_cob] = 0;
+        }
+        $cobradoresTotales[$prestamo->nom_cob] += $prestamo->valor_calculado;
+        }
 
         // Exportar a Excel
-        return Excel::download(new PagaDiarioExport($sumaValCuo, $sumaCapPre, $valorARecoger, $nuevosPrestamosCobrador), 'paga-diario.xlsx');
+        return Excel::download(new PagaDiarioExport($sumaValCuo, $sumaCapPre, $valorARecoger, $cobradoresTotales), 'paga-diario.xlsx');
     }
 }
