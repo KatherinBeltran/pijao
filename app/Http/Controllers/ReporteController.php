@@ -46,8 +46,9 @@ class ReporteController extends Controller
         $totalUtilidad = $totalDineroPrestadoConIntereses - $capitalPrestado;
         $utilidadNetaConGastos = $totalUtilidad - $reporte->sum('suma_montos');
     
-        // Pasar los datos a la vista
-        return view('reportes', compact('reporte', 'fechaInicio', 'fechaFin', 'capitalPrestado', 'totalRecolectado', 'totalDineroPrestadoConIntereses', 'totalUtilidad', 'utilidadNetaConGastos'));
+        $deuda = $totalDineroPrestadoConIntereses - $totalRecolectado;
+
+        return view('reportes', compact('reporte', 'fechaInicio', 'fechaFin', 'capitalPrestado', 'totalRecolectado', 'totalDineroPrestadoConIntereses', 'totalUtilidad', 'utilidadNetaConGastos', 'deuda'));
     }
 
     public function generarPDF(Request $request)
@@ -83,8 +84,9 @@ class ReporteController extends Controller
         $options->set('isHtml5ParserEnabled', true);
         $dompdf = new Dompdf($options);
     
-        // Crear el contenido HTML del PDF
-        $html = view('pdf.reporte', compact('reporte', 'fechaInicio', 'fechaFin', 'capitalPrestado', 'totalRecolectado', 'totalDineroPrestadoConIntereses', 'totalUtilidad', 'utilidadNetaConGastos'))->render();
+        $deuda = $totalDineroPrestadoConIntereses - $totalRecolectado;
+
+        $html = view('pdf.reporte', compact('reporte', 'fechaInicio', 'fechaFin', 'capitalPrestado', 'totalRecolectado', 'totalDineroPrestadoConIntereses', 'totalUtilidad', 'utilidadNetaConGastos', 'deuda'))->render();
     
         // Cargar el contenido HTML al Dompdf
         $dompdf->loadHtml($html);
@@ -132,7 +134,8 @@ class ReporteController extends Controller
         $totalUtilidad = $totalDineroPrestadoConIntereses - $capitalPrestado;
         $utilidadNetaConGastos = $totalUtilidad - $reporte->sum('suma_montos');
 
-        // Exportar a Excel
-        return Excel::download(new ReporteExport($reporte, $fechaInicio, $fechaFin, $capitalPrestado, $totalRecolectado, $totalDineroPrestadoConIntereses, $totalUtilidad, $utilidadNetaConGastos), 'reporte.xlsx');
+        $deuda = $totalDineroPrestadoConIntereses - $totalRecolectado;
+
+        return Excel::download(new ReporteExport($reporte, $fechaInicio, $fechaFin, $capitalPrestado, $totalRecolectado, $totalDineroPrestadoConIntereses, $totalUtilidad, $utilidadNetaConGastos, $deuda), 'reporte.xlsx');
     }
 }

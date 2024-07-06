@@ -4,8 +4,10 @@ namespace App\Exports;
 
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class ReporteExport implements FromView
+class ReporteExport implements FromView, WithColumnFormatting
 {
     protected $reporte;
     protected $fechaInicio;
@@ -15,8 +17,9 @@ class ReporteExport implements FromView
     protected $totalDineroPrestadoConIntereses;
     protected $totalUtilidad;
     protected $utilidadNetaConGastos;
+    protected $deuda;
 
-    public function __construct($reporte, $fechaInicio, $fechaFin, $capitalPrestado, $totalRecolectado, $totalDineroPrestadoConIntereses, $totalUtilidad, $utilidadNetaConGastos)
+    public function __construct($reporte, $fechaInicio, $fechaFin, $capitalPrestado, $totalRecolectado, $totalDineroPrestadoConIntereses, $totalUtilidad, $utilidadNetaConGastos, $deuda)
     {
         $this->reporte = $reporte;
         $this->fechaInicio = $fechaInicio;
@@ -26,6 +29,7 @@ class ReporteExport implements FromView
         $this->totalDineroPrestadoConIntereses = $totalDineroPrestadoConIntereses;
         $this->totalUtilidad = $totalUtilidad;
         $this->utilidadNetaConGastos = $utilidadNetaConGastos;
+        $this->deuda = $deuda;
     }
 
     public function view(): View
@@ -38,7 +42,15 @@ class ReporteExport implements FromView
             'totalRecolectado' => $this->totalRecolectado,
             'totalDineroPrestadoConIntereses' => $this->totalDineroPrestadoConIntereses,
             'totalUtilidad' => $this->totalUtilidad,
-            'utilidadNetaConGastos' => $this->utilidadNetaConGastos
+            'utilidadNetaConGastos' => $this->utilidadNetaConGastos,
+            'deuda' => $this->deuda
         ]);
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'B' => '#,##0', // Formato personalizado para separar miles con punto
+        ];
     }
 }

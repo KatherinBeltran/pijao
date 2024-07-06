@@ -71,6 +71,10 @@
                                 <td>{{ number_format($totalDineroPrestadoConIntereses, 0, ',', '.') }}</td>
                             </tr>
                             <tr>
+                                <td>Deuda</td>
+                                <td>{{ number_format($deuda, 0, ',', '.') }}</td>
+                            </tr>
+                            <tr>
                                 <td>Total Utilidad</td>
                                 <td>{{ number_format($totalUtilidad, 0, ',', '.') }}</td>
                             </tr>
