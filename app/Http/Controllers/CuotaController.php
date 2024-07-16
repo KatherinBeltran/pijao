@@ -216,33 +216,8 @@ class CuotaController extends Controller
         // Verificar si el número de cuotas existentes es igual a cuo_pre
         $cuotas_existentes = Cuota::where('pre_cuo', $request->pre_cuo)->count();
     
-        // Verificar si sal_cuo es igual a 0
-        if ($request->sal_cuo == 0) {
-            // Actualizar los campos del préstamo
-            $prestamo->cuo_pag_pre = $prestamo->cuo_pre;
-            $prestamo->val_pag_pre = $prestamo->tot_pre;
-            $prestamo->sig_cuo_pre = $prestamo->cuo_pre;
-            $prestamo->cuo_pen_pre = 0;
-            $prestamo->val_cuo_pen_pre = 0;
-    
-            // Guardar los cambios en el préstamo
-            $prestamo->save();
-    
-            // Actualizar el registro actual con los campos editados que el usuario ha proporcionado
-            $cuota->update([
-                'fec_cuo' => $request->fec_cuo,
-                'val_cuo' => $request->val_cuo,
-                'tot_abo_cuo' => $request->tot_abo_cuo,
-                'sal_cuo' => $request->sal_cuo,
-                'obs_cuo' => $request->obs_cuo,
-            ]);
-    
-            return redirect()->route('cuotas.index')
-                ->with('success', '<div class="alert alert-success alert-dismissible">
-                                        <h5><i class="icon fas fa-check"></i> ¡Éxito!</h5>
-                                        Cuota actualizada exitosamente.
-                                    </div>');
-        } elseif ($cuotas_existentes < $prestamo->cuo_pre) {
+        // Verificar si sal_cuo es mayor a 0
+        if ($request->sal_cuo > 0) {
             // Incrementar el número de cuotas existentes
             $cuotas_existentes++;
     
@@ -304,7 +279,7 @@ class CuotaController extends Controller
                                         Cuota actualizada exitosamente.
                                     </div>');
         } else {
-            // Si el número de cuotas existentes ya es igual a cuo_pre, solo actualizamos el registro actual
+            // Si el número de sal_cuo es igual a cero, solo actualizamos el registro actual
             $cuota->update([
                 'pre_cuo' => $request->pre_cuo,
                 'fec_cuo' => $request->fec_cuo,
@@ -329,11 +304,8 @@ class CuotaController extends Controller
             // Actualizamos el campo sig_cuo_pre del préstamo asociado con el valor de cuotas_existentes
             $prestamo->sig_cuo_pre = $cuotas_existentes;
     
-            // Calcular el número de cuotas pendientes
-            $cuo_pen_pre = $prestamo->cuo_pre - $prestamo->cuo_pag_pre;
-    
-            // Actualizar el campo cuo_pen_pre del préstamo asociado con el valor calculado
-            $prestamo->cuo_pen_pre = $cuo_pen_pre;
+            // Actualizar el campo cuo_pen_pre del préstamo asociado a 0
+            $prestamo->cuo_pen_pre = 0;
     
             // Calcular el valor de las cuotas pendientes
             $val_cuo_pen_pre = $prestamo->tot_pre - $prestamo->val_pag_pre;

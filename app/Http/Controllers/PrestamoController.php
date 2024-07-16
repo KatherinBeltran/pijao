@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Prestamo;
 use Illuminate\Http\Request;
 use App\Models\Barrio;
+use App\Models\Cuota;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -210,11 +211,52 @@ class PrestamoController extends Controller
         
         $prestamo->update($request->all());
 
+        // Actualizar cuotas
+        $this->actualizarCuotas($prestamo);
+
         return redirect()->route('prestamos.index')
             ->with('success', '<div class="alert alert-success alert-dismissible">
                                     <h5><i class="icon fas fa-check"></i> ¡Éxito!</h5>
                                     Prestamo actualizado exitosamente.
                                 </div>');
+    }
+
+    public function actualizarCuotas(Prestamo $prestamo)
+    {
+        // Verificar si existen cuotas para este préstamo
+        $existenCuotas = $prestamo->cuotas()->exists();
+
+        if ($existenCuotas) {
+            // Si existen cuotas, eliminarlas
+            $prestamo->cuotas()->delete();
+        }
+
+        $fechaBase = Carbon::parse($prestamo->fec_pre);
+
+        $cuota = new Cuota();
+        $cuota->pre_cuo = $prestamo->id;
+        $cuota->num_cuo = 1;
+
+        // Calcular la fecha de la cuota según el tipo de pago
+        $fechaBase = Carbon::parse($prestamo->fec_pre);
+        switch ($prestamo->pag_pre) {
+            case 'Diario':
+                $cuota->fec_cuo = $fechaBase->copy()->addDay();
+                break;
+            case 'Semanal':
+                $cuota->fec_cuo = $fechaBase->copy()->addWeek();
+                break;
+            case 'Quincenal':
+                $cuota->fec_cuo = $fechaBase->copy()->addWeeks(2);
+                break;
+            case 'Mensual':
+                $cuota->fec_cuo = $fechaBase->copy()->addMonth();
+                break;
+            default:
+                $cuota->fec_cuo = $fechaBase->copy()->addDay(); // Valor predeterminado: diario
+        }
+
+        $cuota->save();
     }
 
     /**

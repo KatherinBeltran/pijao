@@ -43,7 +43,7 @@
                 @php
                     $prestamo = $prestamos->where('cuo_pre', $cuota->num_cuo)->first();
                 @endphp
-                <tr class="@if (!is_null($cuota->pre_cuo) && !is_null($cuota->fec_cuo) && !is_null($cuota->val_cuo) && !is_null($cuota->tot_abo_cuo) && !is_null($cuota->sal_cuo) && !is_null($cuota->num_cuo))
+                <tr class="@if ($cuota->sal_cuo !== null && $cuota->sal_cuo == 0)
                     row-green 
                 @elseif ($cuota->fec_cuo < \Carbon\Carbon::now('America/Bogota')->format('Y-m-d'))
                     row-red 
