@@ -65,7 +65,8 @@ class CuotaController extends Controller
             $cuotasQuery = Cuota::select('cuotas.*')
                 ->join(DB::raw('(SELECT MAX(id) AS id FROM cuotas GROUP BY pre_cuo) AS sub'), function ($join) {
                     $join->on('cuotas.id', '=', 'sub.id');
-                });
+                })
+                ->orderByRaw("COALESCE(cuotas.ord_cuo, 0) ASC, cuotas.id ASC");
     
             $cuotas = $cuotasQuery->paginate(10000);
     
@@ -347,12 +348,87 @@ class CuotaController extends Controller
      */
     public function destroy($id)
     {
-        $cuota = Cuota::find($id)->delete();
+        $cuota = Cuota::findOrFail($id);
 
+        // Obtener el préstamo asociado a esta cuota
+        $prestamo = Prestamo::findOrFail($cuota->pre_cuo);
+    
+        // Obtener las dos últimas cuotas asociadas al préstamo
+        $ultimasCuotas = Cuota::where('pre_cuo', $prestamo->id)
+            ->orderBy('num_cuo', 'desc')
+            ->take(2)
+            ->get();
+    
+        // Realizar las actualizaciones correspondientes en el préstamo
+        foreach ($ultimasCuotas as $cuota) {
+            // Restar el val_cuo de val_pag_pre del préstamo, tomando 0 si es null
+            $prestamo->val_pag_pre = max(0, ($prestamo->val_pag_pre ?? 0) - ($cuota->val_cuo ?? 0));
+    
+            // Sumar el val_cuo a val_cuo_pen_pre del préstamo, tomando 0 si es null
+            $prestamo->val_cuo_pen_pre = ($prestamo->val_cuo_pen_pre ?? 0) + ($cuota->val_cuo ?? 0);
+    
+            // Obtener el número de cuotas asociadas al préstamo
+            $totalCuotas = Cuota::where('pre_cuo', $prestamo->id)->count();
+
+            // Establecer cuo_pag_pre como el número de cuotas menos uno
+            $prestamo->cuo_pag_pre = max(0, $totalCuotas - 1);
+    
+            // Restar 1 de sig_cuo_pre del préstamo
+            $prestamo->sig_cuo_pre = $prestamo->cuo_pag_pre + 1;
+    
+            // Actualizar cuo_pen_pre del préstamo para que sea igual a cuo_pre - cuo_pag_pre
+            $prestamo->cuo_pen_pre = $prestamo->cuo_pre - $prestamo->cuo_pag_pre;
+    
+            // Guardar los cambios en el préstamo
+            $prestamo->save();
+    
+            // Eliminar la cuota
+            $cuota->delete();
+        }
+
+        // Crear una nueva cuota similar a la lógica del método update
+        $cuotas_existentes = Cuota::where('pre_cuo', $prestamo->id)->count() + 1;
+
+        // Obtener la última cuota del préstamo
+        $ultimaCuota = Cuota::where('pre_cuo', $prestamo->id)
+            ->orderBy('fec_cuo', 'desc')
+            ->first();
+
+        // Si no hay una cuota previa, usar la fecha del préstamo
+        if ($ultimaCuota) {
+            $ultimaFecha = $ultimaCuota->fec_cuo;
+        } else {
+            $ultimaFecha = $prestamo->fec_pre;
+        }
+
+        // Calcular la fecha de vencimiento de la nueva cuota basada en la última fecha
+        $fechaNuevaCuota = $this->calcularFechaVencimiento(Carbon::parse($ultimaFecha), $prestamo->pag_pre);
+
+        // Crear una nueva cuota con los valores necesarios
+        $nuevaCuota = Cuota::create([
+            'pre_cuo' => $prestamo->id,
+            'num_cuo' => $cuotas_existentes,
+            'fec_cuo' => $fechaNuevaCuota
+        ]);
+
+        $nuevaCuota->save();
+    
         return redirect()->route('cuotas.index')
             ->with('success', '<div class="alert alert-success alert-dismissible">
                                     <h5><i class="icon fas fa-check"></i> ¡Éxito!</h5>
-                                    Cuota eliminada exitosamente.
+                                    Cuota eliminada y nueva cuota creada exitosamente.
                                 </div>');
+    }
+
+    public function updateOrder(Request $request)
+    {
+        $order = $request->input('order');
+    
+        foreach ($order as $index => $id) {
+            $cuotaId = str_replace('row_', '', $id);
+            Cuota::where('id', $cuotaId)->update(['ord_cuo' => $index + 1]);
+        }
+    
+        return response()->json(['success' => true]);
     }
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CuotaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Auth::routes();
 
+Route::post('/update-order', [App\Http\Controllers\CuotaController::class, 'updateOrder'])->name('cuotas.updateOrder');
 Route::get('paga-diario/excel', [App\Http\Controllers\PagaDiarioController::class, 'generarExcel'])->name('paga-diario.excel');
 Route::get('/paga-diario/pdf', [App\Http\Controllers\PagaDiarioController::class, 'generarPDF'])->name('paga-diario.pdf');
 Route::resource('paga-diario', App\Http\Controllers\PagaDiarioController::class);

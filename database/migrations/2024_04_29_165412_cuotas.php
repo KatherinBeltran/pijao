@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('cuotas', function (Blueprint $table) {
             $table->increments('id'); // codigo cuota
+            $table->integer('ord_cuo')->nullable(); // orden cuotas
             $table->unsignedInteger('pre_cuo'); // prestamo cuota
             $table->datetime('fec_cuo')->nullable();// fecha cuota
             $table->integer('val_cuo')->nullable(); // valor cuota

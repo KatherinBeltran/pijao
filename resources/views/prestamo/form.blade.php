@@ -25,7 +25,12 @@
             </div>
             <div class="form-group">
                 {{ Form::label('Barrio') }}
-                {{ Form::select('bar_cli_pre', $barrios->pluck('nom_bar', 'id'), $prestamo->bar_cli_pre, ['class' => 'form-control' . ($errors->has('bar_cli_pre') ? ' is-invalid' : ''), 'placeholder' => 'Seleccione un barrio']) }}
+                {{ Form::text('bar_cli_pre', $prestamo->bar_cli_pre, ['class' => 'form-control' . ($errors->has('bar_cli_pre') ? ' is-invalid' : ''), 'placeholder' => 'Escriba el nombre del barrio', 'list' => 'barrios-list']) }}
+                <datalist id="barrios-list">
+                    @foreach($barrios as $id => $nombre)
+                        <option value="{{ $nombre }}" data-id="{{ $id }}">
+                    @endforeach
+                </datalist>
                 {!! $errors->first('bar_cli_pre', '<div class="invalid-feedback">:message</div>') !!}
             </div>
             <div class="form-group">

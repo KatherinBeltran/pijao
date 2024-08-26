@@ -25,6 +25,14 @@
         background-repeat: no-repeat;
         background-attachment: fixed;
     }
+    .password-toggle {
+        position: absolute;
+        right: 50px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        z-index: 2;
+    }
 </style>
 
 @section('auth_header', __('Iniciar sesión'))
@@ -51,15 +59,17 @@
         </div>
 
         {{-- Password field --}}
-        <div class="input-group mb-3">
-            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
+        <div class="input-group mb-3 position-relative">
+            <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror"
                    placeholder="{{ __('Contraseña') }}">
-
             <div class="input-group-append">
                 <div class="input-group-text">
                     <span class="fas fa-lock {{ config('adminlte.classes_auth_icon', '') }}"></span>
                 </div>
             </div>
+            <span class="password-toggle" id="toggle-password">
+                <i class="fas fa-eye"></i>
+            </span>
 
             @error('password')
                 <span class="invalid-feedback" role="alert">
@@ -125,6 +135,19 @@
             // Al salir del campo, vuelve a agregar el dominio si es necesario
             if (!emailInput.value.endsWith(domain)) {
                 emailInput.value += domain;
+            }
+        });
+
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('toggle-password');
+
+        togglePassword.addEventListener('click', function () {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                togglePassword.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                passwordInput.type = 'password';
+                togglePassword.innerHTML = '<i class="fas fa-eye"></i>';
             }
         });
     });

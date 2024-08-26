@@ -18,8 +18,9 @@ class ReporteExport implements FromView, WithColumnFormatting
     protected $totalUtilidad;
     protected $utilidadNetaConGastos;
     protected $deuda;
+    protected $bonosCobradores;
 
-    public function __construct($reporte, $fechaInicio, $fechaFin, $capitalPrestado, $totalRecolectado, $totalDineroPrestadoConIntereses, $totalUtilidad, $utilidadNetaConGastos, $deuda)
+    public function __construct($reporte, $fechaInicio, $fechaFin, $capitalPrestado, $totalRecolectado, $totalDineroPrestadoConIntereses, $totalUtilidad, $utilidadNetaConGastos, $deuda, $bonosCobradores)
     {
         $this->reporte = $reporte;
         $this->fechaInicio = $fechaInicio;
@@ -30,6 +31,7 @@ class ReporteExport implements FromView, WithColumnFormatting
         $this->totalUtilidad = $totalUtilidad;
         $this->utilidadNetaConGastos = $utilidadNetaConGastos;
         $this->deuda = $deuda;
+        $this->bonosCobradores = $bonosCobradores; 
     }
 
     public function view(): View
@@ -43,7 +45,8 @@ class ReporteExport implements FromView, WithColumnFormatting
             'totalDineroPrestadoConIntereses' => $this->totalDineroPrestadoConIntereses,
             'totalUtilidad' => $this->totalUtilidad,
             'utilidadNetaConGastos' => $this->utilidadNetaConGastos,
-            'deuda' => $this->deuda
+            'deuda' => $this->deuda,
+            'bonosCobradores' => $this->bonosCobradores 
         ]);
     }
 

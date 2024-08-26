@@ -85,6 +85,24 @@
                         </tbody>
                     </table>
                     <br>
+                    <h3>Bonos a Cobradores</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Cobrador</th>
+                                <th>Bonos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($bonosCobradores as $bono)
+                                <tr>
+                                    <td>{{ $bono->nom_cob }}</td>
+                                    <td>{{ number_format($bono->total_bono, 0, ',', '.') }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <br>
                     <form action="{{ route('reportes.pdf') }}" method="GET" target="_blank" style="float: right; margin-right: 10px;">
                         <input type="hidden" name="fecha_inicio" value="{{ $fechaInicio }}">
                         <input type="hidden" name="fecha_fin" value="{{ $fechaFin }}">

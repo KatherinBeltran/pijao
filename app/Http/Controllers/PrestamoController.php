@@ -82,8 +82,10 @@ class PrestamoController extends Controller
     
         // Obtener la fecha y hora actual en el formato adecuado
         $now = Carbon::now('America/Bogota')->toDateTimeString();
+
+        $barrios = Barrio::pluck('nom_bar', 'id');
     
-        return view('prestamo.create', compact('prestamo', 'barrios', 'now', 'numCedCob'));
+        return view('prestamo.create', compact('prestamo', 'barrios', 'now', 'numCedCob', 'barrios'));
     }  
 
     /**
@@ -138,6 +140,12 @@ class PrestamoController extends Controller
         $data['est_pag_pre'] = 'Pendiente';
     } else {
         $data['est_pag_pre'] = 'Al día';
+    }
+
+    // Buscar el ID del barrio basado en el nombre
+    $barrio = Barrio::where('nom_bar', $request->bar_cli_pre)->first();
+    if ($barrio) {
+        $data['bar_cli_pre'] = $barrio->id;
     }
 
     $prestamo = Prestamo::create($data);

@@ -104,6 +104,24 @@
             </tr>
         </tbody>
     </table>
+    <br>
+    <h2 style="text-align: left;">Bonos a Cobradores</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Cobrador</th>
+                <th>Bonos</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($bonosCobradores as $bono)
+                <tr>
+                    <td>{{ $bono->nom_cob }}</td>
+                    <td>{{ $bono->total_bono }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
     <div class="footer">
         Página 1
     </div>

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property $id
  * @property $pre_cuo
+ * @property $ord_cuo
  * @property $fec_cuo
  * @property $val_cuo
  * @property $tot_abo_cuo
@@ -36,7 +37,7 @@ class Cuota extends Model
      *
      * @var array
      */
-    protected $fillable = ['pre_cuo','fec_cuo','val_cuo','tot_abo_cuo','sal_cuo','num_cuo','obs_cuo'];
+    protected $fillable = ['pre_cuo','ord_cuo','fec_cuo','val_cuo','tot_abo_cuo','sal_cuo','num_cuo','obs_cuo'];
 
 
     /**

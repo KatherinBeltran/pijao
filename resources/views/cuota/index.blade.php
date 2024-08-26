@@ -10,6 +10,7 @@
             {{ __('Nuevo') }}
         </a>
     </div>
+    <br>
     <div class="row">
         <div class="col-md-7,1">
             @if (session('success'))
@@ -47,7 +48,7 @@
                     row-green 
                 @elseif ($cuota->fec_cuo < \Carbon\Carbon::now('America/Bogota')->format('Y-m-d'))
                     row-red 
-                @endif">
+                @endif" id="row_{{ $cuota->id }}">
                     <td>{{ $cuota->pre_cuo }}</td>
                     <td>{{ $cuota->prestamo->nom_cli_pre }}</td>
                     <td>{{ $cuota->fec_cuo }}</td>
@@ -76,6 +77,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     <style>
         #example_wrapper .paginate_button.page-item.active > a.page-link {
@@ -100,15 +102,42 @@
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script>
-        $(document).ready(function() {
-            $('#example').DataTable({
-                responsive: true,
-                language: {
-                    url: "//cdn.datatables.net/plug-ins/1.11.3/i18n/es_es.json" // Carga el archivo de idioma en español
-                }
-            });
-        });
+    $(document).ready(function() {
+        $('#example tbody').sortable({
+            items: 'tr',
+            cursor: 'move',
+            opacity: 0.6,
+            revert: 300,
+            update: function(event, ui) {
+                var order = $(this).sortable('toArray');
+                
+                $.ajax({
+                    url: '{{ route("cuotas.updateOrder") }}', // Aseg迆rate de que esta URL sea correcta
+                    method: 'POST',
+                    data: { 
+                        order: order,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            console.log('Orden actualizado exitosamente.');
+                            alert('Orden actualizado exitosamente.');
+                        } else {
+                            console.error('Error al actualizar el orden:', response);
+                            alert('Error al actualizar el orden.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error en la solicitud AJAX:', status, error);
+                        console.log('Respuesta del servidor:', xhr.responseText);
+                        alert('Error al actualizar el orden. Por favor, revisa la consola para m芍s detalles.');
+                    }
+                });
+            }
+        }).disableSelection();
+    });
     </script>
 @stop

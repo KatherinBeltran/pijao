@@ -35,7 +35,7 @@ class PagaDiarioController extends Controller
             $query->select('prestamos.id')
                   ->from('prestamos')
                   ->join('cuotas', 'cuotas.pre_cuo', '=', 'prestamos.id')
-                  ->whereDate('cuotas.fec_cuo', '<=', $fechaHoy)
+                  ->whereDate('cuotas.fec_cuo', '=', $fechaHoy)
                   ->whereNull('cuotas.val_cuo')
                   ->whereNull('cuotas.tot_abo_cuo')
                   ->whereNull('cuotas.sal_cuo');
