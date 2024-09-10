@@ -67,6 +67,10 @@
                 <td>Total prestado</td>
                 <td>{{ $sumaCapPre }}</td>
             </tr>
+            <tr>
+                <td>Valor en efectivo</td>
+                <td>{{ $valorEnEfectivo }}</td>
+            </tr>
         </tbody>
     </table>
     <br>

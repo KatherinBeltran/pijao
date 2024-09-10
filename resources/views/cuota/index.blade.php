@@ -5,11 +5,11 @@
 @section('content_header')
     <h1>Manejo de cuotas</h1>
 
-    <div class="float-right">
+    <!--<div class="float-right">
         <a href="{{ route('cuotas.create') }}" class="btn btn-block btn-outline-success btn-sm float-right" data-placement="left">
             {{ __('Nuevo') }}
         </a>
-    </div>
+    </div>-->
     <br>
     <div class="row">
         <div class="col-md-7,1">

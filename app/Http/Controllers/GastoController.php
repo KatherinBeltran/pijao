@@ -6,6 +6,8 @@ use App\Models\Gasto;
 use Illuminate\Http\Request;
 use App\Models\Categoria;
 use Carbon\Carbon;
+use App\Models\Capital;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class GastoController
@@ -59,9 +61,12 @@ class GastoController extends Controller
     public function store(Request $request)
     {
         request()->validate(Gasto::$rules);
-
-        $gasto = Gasto::create($request->all());
-
+    
+        DB::transaction(function () use ($request) {
+            $gasto = Gasto::create($request->all());
+            Capital::createFromGasto($gasto);
+        });
+    
         return redirect()->route('gastos.index')
             ->with('success', '<div class="alert alert-success alert-dismissible">
                                     <h5><i class="icon fas fa-check"></i> ¡Éxito!</h5>

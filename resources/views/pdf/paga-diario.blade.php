@@ -81,6 +81,10 @@
                 <td>Total prestado</td>
                 <td>{{ number_format($sumaCapPre, 0, '', '.') }}</td>
             </tr>
+            <tr>
+                <td>Valor en efectivo</td>
+                <td>{{ number_format($valorEnEfectivo, 0, '', '.') }}</td>
+            </tr>
         </tbody>
     </table>
     <br>

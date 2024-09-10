@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property $created_at
  * @property $updated_at
  *
+ * @property Capital[] $capitals
  * @property Categoria $categoria
  * @package App
  * @mixin \Illuminate\Database\Eloquent\Builder
@@ -37,6 +38,14 @@ class Gasto extends Model
     protected $fillable = ['fec_gas','mon_gas','cat_gas'];
 
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function capitals()
+    {
+        return $this->hasMany('App\Models\Capital', 'gas_cap', 'id');
+    }
+    
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
