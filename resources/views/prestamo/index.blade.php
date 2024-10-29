@@ -33,6 +33,8 @@
             <th>No. de celular</th>
             <th>Dirección</th>
             <th>Barrio</th>
+            <th>Estado</th>
+            <th>Dias en mora</th>
             <th>Fecha</th>
             <th>Cobros y/o pagos</th>
             <th>Cuotas</th>
@@ -45,8 +47,6 @@
             <th>Siguiente cuota</th>
             <th>Cuotas pendientes</th>
             <th>Valor cuotas pendientes</th>
-            <th>Estado</th>
-            <th>Dias en mora</th>
             <th>Registrado por</th>
             <th>Acciones</th>
         </tr>
@@ -61,18 +61,6 @@
                 <td>{{ $prestamo->num_cel_cli_pre }}</td>
                 <td>{{ $prestamo->dir_cli_pre }}</td>
                 <td>{{ $prestamo->barrio->nom_bar }}</td>
-                <td>{{ $prestamo->fec_pre }}</td>
-                <td>{{ $prestamo->pag_pre }}</td>
-                <td>{{ $prestamo->cuo_pre }}</td>
-                <td>{{ $prestamo->cap_pre }}</td>
-                <td>{{ $prestamo->int_pre }}</td>
-                <td>{{ $prestamo->tot_pre }}</td>
-                <td>{{ $prestamo->val_cuo_pre }}</td>
-                <td>{{ $prestamo->cuo_pag_pre }}</td>
-                <td>{{ $prestamo->val_pag_pre }}</td>
-                <td>{{ $prestamo->sig_cuo_pre }}</td>
-                <td>{{ $prestamo->cuo_pen_pre }}</td>
-                <td>{{ $prestamo->val_cuo_pen_pre }}</td>
                 <td>
                     @if ($prestamo->est_pag_pre == 'Al día')
                         <span class="badge badge-success">{{ $prestamo->est_pag_pre }}</span>
@@ -85,6 +73,18 @@
                     @endif
                 </td>
                 <td>{{ $prestamo->dia_mor_pre }}</td>
+                <td>{{ $prestamo->fec_pre }}</td>
+                <td>{{ $prestamo->pag_pre }}</td>
+                <td>{{ $prestamo->cuo_pre }}</td>
+                <td>{{ $prestamo->cap_pre }}</td>
+                <td>{{ $prestamo->int_pre }}</td>
+                <td>{{ $prestamo->tot_pre }}</td>
+                <td>{{ $prestamo->val_cuo_pre }}</td>
+                <td>{{ $prestamo->cuo_pag_pre }}</td>
+                <td>{{ $prestamo->val_pag_pre }}</td>
+                <td>{{ $prestamo->sig_cuo_pre }}</td>
+                <td>{{ $prestamo->cuo_pen_pre }}</td>
+                <td>{{ $prestamo->val_cuo_pen_pre }}</td>
                 <td>{{ $prestamo->reg_pre }}</td>
 
                 <td>

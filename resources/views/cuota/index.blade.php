@@ -43,10 +43,13 @@
             @foreach ($cuotas as $cuota)
                 @php
                     $prestamo = $prestamos->where('cuo_pre', $cuota->num_cuo)->first();
+                    $diasDiferencia = \Carbon\Carbon::parse($cuota->fec_cuo)->diffInDays(\Carbon\Carbon::now('America/Bogota'), false);
                 @endphp
                 <tr class="@if ($cuota->sal_cuo !== null && $cuota->sal_cuo == 0)
                     row-green 
-                @elseif ($cuota->fec_cuo < \Carbon\Carbon::now('America/Bogota')->format('Y-m-d'))
+                @elseif ($diasDiferencia > 20)
+                    row-orange
+                @elseif ($diasDiferencia > 0)
                     row-red 
                 @endif" id="row_{{ $cuota->id }}">
                     <td>{{ $cuota->pre_cuo }}</td>
@@ -94,6 +97,30 @@
             background-color: #dc3545 !important;
             color: white !important;
         }
+        .row-orange {
+            background-color: #fd7e14 !important;
+            color: white !important;
+        }
+        
+        /* Estilos para el filtro de búsqueda */
+        .dataTables_filter {
+            margin-bottom: 10px;
+        }
+        .dataTables_filter input {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px 10px;
+            margin-left: 5px;
+        }
+        /* Ajustar el ancho del campo de búsqueda */
+        .dataTables_filter input {
+            width: 250px;
+        }
+        /* Estilo para el texto "Buscar:" */
+        .dataTables_filter label {
+            font-weight: normal;
+            text-align: right;
+        }
     </style>
 @stop
 
@@ -106,6 +133,19 @@
 
     <script>
     $(document).ready(function() {
+        // Inicializar DataTable con opciones
+        var table = $('#example').DataTable({
+            responsive: true,
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+            },
+            order: [],  // Deshabilita el ordenamiento inicial
+            dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+                 '<"row"<"col-sm-12"tr>>' +
+                 '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        });
+
+        // Mantener la funcionalidad de sortable
         $('#example tbody').sortable({
             items: 'tr',
             cursor: 'move',
@@ -115,7 +155,7 @@
                 var order = $(this).sortable('toArray');
                 
                 $.ajax({
-                    url: '{{ route("cuotas.updateOrder") }}', // Aseg迆rate de que esta URL sea correcta
+                    url: '{{ route("cuotas.updateOrder") }}',
                     method: 'POST',
                     data: { 
                         order: order,
@@ -133,7 +173,7 @@
                     error: function(xhr, status, error) {
                         console.error('Error en la solicitud AJAX:', status, error);
                         console.log('Respuesta del servidor:', xhr.responseText);
-                        alert('Error al actualizar el orden. Por favor, revisa la consola para m芍s detalles.');
+                        alert('Error al actualizar el orden. Por favor, revisa la consola para más detalles.');
                     }
                 });
             }
